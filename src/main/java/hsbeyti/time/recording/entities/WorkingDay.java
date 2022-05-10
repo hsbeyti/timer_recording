@@ -3,16 +3,31 @@ package hsbeyti.time.recording.entities;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class WorkingDay {
-	private LocalDateTime workingDay;
-	private List<WorkingTimeStot> workingTimeSlots;
-	private List<BreakTimeSlot> workingBreaks;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-	public LocalDateTime getWorkingDay() {
+public class WorkingDay {
+	
+	private String workingDay;
+
+	private List<WorkingTimeStot> workingTimeSlots;
+	
+	private List<BreakTimeSlot> workingBreaks;
+	
+
+	public WorkingDay(String workingDay
+		, List<WorkingTimeStot> workingTimeSlots,
+		List<BreakTimeSlot> workingBreaks) {
+
+		this.workingDay = workingDay;
+		this.workingTimeSlots = workingTimeSlots;
+		this.workingBreaks = workingBreaks;
+	}
+
+	public String getWorkingDay() {
 		return workingDay;
 	}
 
-	public void setWorkingDay(LocalDateTime workingDay) {
+	public void setWorkingDay(String workingDay) {
 		this.workingDay = workingDay;
 	}
 

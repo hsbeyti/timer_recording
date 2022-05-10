@@ -1,24 +1,34 @@
 package hsbeyti.time.recording.entities;
 
-import java.time.LocalTime;
+
 
 public class WorkingTimeStot {
-	private LocalTime start;
-	private LocalTime end;
+	private String start;
+	private String end;
 
-	public LocalTime getStart() {
+	
+	
+	
+
+	public WorkingTimeStot(String start, String end) {
+	
+		this.start = start;
+		this.end = end;
+	}
+
+	public String getStart() {
 		return start;
 	}
 
-	public void setStart(LocalTime start) {
+	public void setStart(String start) {
 		this.start = start;
 	}
 
-	public LocalTime getEnd() {
+	public String getEnd() {
 		return end;
 	}
 
-	public void setEnd(LocalTime end) {
+	public void setEnd(String end) {
 		this.end = end;
 	}
 

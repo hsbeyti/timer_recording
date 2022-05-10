@@ -2,11 +2,22 @@ package hsbeyti.time.recording.entities;
 
 import java.util.Objects;
 
+import org.springframework.data.mongodb.core.mapping.Field;
+
 public class BreakTimeSlot {
 
 	private String description;
-
+	
 	private Integer durationsInMinutes;
+	
+	
+
+
+	public BreakTimeSlot(String description, Integer durationsInMinutes) {
+	
+		this.description = description;
+		this.durationsInMinutes = durationsInMinutes;
+	}
 
 	public String getDescription() {
 		return description;

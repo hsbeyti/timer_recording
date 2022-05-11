@@ -7,14 +7,11 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class BreakTimeSlot {
 
 	private String description;
-	
+	@Field("duration_in_imnutes")
 	private Integer durationsInMinutes;
-	
-	
-
 
 	public BreakTimeSlot(String description, Integer durationsInMinutes) {
-	
+
 		this.description = description;
 		this.durationsInMinutes = durationsInMinutes;
 	}

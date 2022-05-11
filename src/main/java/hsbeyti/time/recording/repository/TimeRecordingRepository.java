@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import hsbeyti.time.recording.entities.*;
 
 @Repository
-public interface TimeRecordingRepository extends MongoRepository<CoWorkerWorkingTimeOnAProject, String>{
-
+public interface TimeRecordingRepository extends MongoRepository<WorkingTime, String>{
+	WorkingTime findByCoWorkerNameAndProjectName (String wrokerName, String projectName);
 }

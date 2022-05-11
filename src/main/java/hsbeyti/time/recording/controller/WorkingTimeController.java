@@ -20,7 +20,7 @@ public class WorkingTimeController {
 	TimeRecordingServices timeRecordingServices;
 	
 	@PostMapping("/create/new")
-	public CoWorkerWorkingTimeOnAProject createNewWorkingDocument(@RequestBody CoWorkerWorkingTimeOnAProject coWorkerWorkingTimeOnAProject) {
-		return timeRecordingServices.createTimeRecording(coWorkerWorkingTimeOnAProject);
+	public WorkingTime createNewWorkingDocument(@RequestBody WorkingTime WorkingTimeOnAProject) {
+		return timeRecordingServices.createTimeRecording(WorkingTimeOnAProject);
 	}
 }

@@ -3,11 +3,15 @@ package hsbeyti.time.recording.time.date.utility;
 
 import java.time.LocalDateTime;
 
-import java.time.format.DateTimeFormatter; 
+import java.time.format.DateTimeFormatter;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component; 
 
 
 public class TodayDateCreator implements DateFormater {
-	public final String DAY_FORMAT = "dd.MM.yyyy";
+	//@Value("${time.recording.DAY_FORMAT}")
+	private  String DAY_FORMAT="dd.MM.yyyy";
 	private LocalDateTime todayDate;
 	
 	

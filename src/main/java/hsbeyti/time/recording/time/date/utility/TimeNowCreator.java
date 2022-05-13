@@ -3,8 +3,12 @@ package hsbeyti.time.recording.time.date.utility;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 public class TimeNowCreator implements TimeFormater {
-	public final String TIME_FORMAT = "HH:mm:ss";
+	//@Value("${time.recording.TIME_FORMAT}")
+	private  String TIME_FORMAT= "HH:mm:ss";
 	private LocalDateTime timeNow;
 
 	public TimeNowCreator(LocalDateTime timeNow) {

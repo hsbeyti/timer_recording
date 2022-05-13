@@ -6,7 +6,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 // Document used to store co-worker working time on a specific project
-@Document(collection = "working_time")
+@Document(collection = "workingTimeF")
+
 public class WorkingTime {
 	@Id
 	private String id;

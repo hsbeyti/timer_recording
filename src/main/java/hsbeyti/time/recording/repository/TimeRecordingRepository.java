@@ -1,5 +1,6 @@
 package hsbeyti.time.recording.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -10,6 +11,6 @@ import hsbeyti.time.recording.entities.*;
 
 @Repository
 public interface TimeRecordingRepository extends MongoRepository<WorkingTime, String>{
-	WorkingTime findByCoWorkerNameAndProjectName (String wrokerName, String projectName);
-	Optional<WorkingTime> findByCoWorkerName (String wrokerName);
+	Optional<WorkingTime> findByCoWorkerNameAndProjectName (String wrokerName, String projectName);
+	List<Optional<WorkingTime>> findByCoWorkerName (String wrokerName);
 }

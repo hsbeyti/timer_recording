@@ -2,6 +2,8 @@ package hsbeyti.time.recording.entities;
 
 import java.util.List;
 
+import javax.validation.constraints.Size;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -12,6 +14,7 @@ public class WorkingTime {
 	@Id
 	private String id;
 	@Field("worker_name")
+	@Size(min = 6,message ="Six charachters minimum")
 	private String coWorkerName;
 	@Field("project_name")
 	private String projectName;

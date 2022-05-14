@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,5 +42,10 @@ public class WorkingTimeController {
 	public Optional<WorkingTime> getWorkingTimeForAWorkerOnAProject(@PathVariable String worker,@PathVariable String project) {
 		return timeRecordingServices.getWorkingTimeForAWorkerOnAProject(worker,project);
 	}
-	//@PutMapping("/workingtime/{worker}/{project}")
+	@PutMapping("/workingtime/{worker}/{project}")
+	public Optional<WorkingTime> updateBreakTimeSlototWorkingTimeForAWorkerOnAProject(@PathVariable String worker, @PathVariable String project,
+			@RequestBody BreakTimeSlot aNewBreakTimeSlot){
+		return timeRecordingServices.updateBreakTimeSlototWorkingTimeForAWorkerOnAProject(worker,project,aNewBreakTimeSlot);
+	
+	}
 }

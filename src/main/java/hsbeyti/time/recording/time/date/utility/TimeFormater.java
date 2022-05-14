@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public interface TimeFormater {
 	
-	public String getTimeNow(LocalDateTime todayDate);
+	public String getTimeNowString();
 
 	
 }

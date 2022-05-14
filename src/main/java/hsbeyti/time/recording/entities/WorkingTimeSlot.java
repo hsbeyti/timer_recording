@@ -4,6 +4,10 @@ public class WorkingTimeSlot {
 	private String start;
 	private String end;
 
+	public WorkingTimeSlot() {
+		
+	}
+
 	public WorkingTimeSlot(String start, String end) {
 
 		this.start = start;

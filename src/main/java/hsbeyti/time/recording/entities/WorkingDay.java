@@ -14,6 +14,10 @@ public class WorkingDay {
 	private List<BreakTimeSlot> workingBreaks;
 	
 
+	public WorkingDay() {
+		
+	}
+
 	public WorkingDay(String workingDay
 		, List<WorkingTimeSlot> workingTimeSlots,
 		List<BreakTimeSlot> workingBreaks) {
@@ -46,5 +50,5 @@ public class WorkingDay {
 	public void setWorkingBreaks(List<BreakTimeSlot> workingBreaks) {
 		this.workingBreaks = workingBreaks;
 	}
-
+    
 }

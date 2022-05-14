@@ -33,11 +33,14 @@ public class TodayDateCreator implements DateFormater {
 
 
 	@Override
-	public String getTodayDate(LocalDateTime todayDate) {
-		DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern(DAY_FORMAT);
-		return todayDate.format(myFormatObj);
-	
+	public String getTodayDateString() {
+		DateTimeFormatter myFormatedDay = DateTimeFormatter.ofPattern(DAY_FORMAT);
+		return  todayDate.format(myFormatedDay);
+		
 	}
+
+
+
     
 	
 	

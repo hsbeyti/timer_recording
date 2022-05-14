@@ -19,7 +19,7 @@ class TimeNowCreatorTest {
 		DateTimeFormatter myFormatedTime = DateTimeFormatter.ofPattern("HH:mm:ss");
 		String actualTimeNow = timeNow.format(myFormatedTime);
 		// when
-		String toTestTimeNow = testingTimeNow.getTimeNow(timeNow);
+		String toTestTimeNow = testingTimeNow.getTimeNowString();
 		// System.out.println(toTestTimeNow);
 		// then
 		assertEquals(actualTimeNow, toTestTimeNow);

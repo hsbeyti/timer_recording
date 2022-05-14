@@ -5,5 +5,5 @@ import java.time.LocalDateTime;
 
 
 public interface DateFormater {
-	public String getTodayDate(LocalDateTime todayDate);
+	public String getTodayDateString();
 }

@@ -25,9 +25,9 @@ public class TimeNowCreator implements TimeFormater {
 	}
 
 	@Override
-	public String getTimeNow(LocalDateTime timeNow) {
+	public String getTimeNowString() {
 		DateTimeFormatter myFormatTime = DateTimeFormatter.ofPattern(TIME_FORMAT);
-		return timeNow.format(myFormatTime);
+		return timeNow.format(myFormatTime).toString();
 	}
 
 }

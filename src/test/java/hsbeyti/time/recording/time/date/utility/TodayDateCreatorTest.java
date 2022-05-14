@@ -19,7 +19,7 @@ class TodayDateCreatorTest {
 		DateTimeFormatter myFormatedDay = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 		String actualTodayDate = todayDate.format(myFormatedDay);
 		// when
-		String toTestTodayDate = testingDayDate.getTodayDate(todayDate);
+		String toTestTodayDate = testingDayDate.getTodayDateString();
 		// System.out.println(toTestTodaDate);
 		// then
 		assertEquals(toTestTodayDate, actualTodayDate);

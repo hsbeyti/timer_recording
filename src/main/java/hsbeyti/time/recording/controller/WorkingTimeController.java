@@ -36,16 +36,23 @@ public class WorkingTimeController {
 
 	@GetMapping("/workingtime/{worker}")
 	public List<Optional<WorkingTime>> getWorkingTimeForA(@Valid @PathVariable String worker) {
-		return timeRecordingServices.getWorkingTime(worker);
+		return timeRecordingServices.getWorkingTimeForA(worker);
 	}
 	@GetMapping("/workingtime/{worker}/{project}")
 	public Optional<WorkingTime> getWorkingTimeForAWorkerOnAProject(@PathVariable String worker,@PathVariable String project) {
 		return timeRecordingServices.getWorkingTimeForAWorkerOnAProject(worker,project);
 	}
-	@PutMapping("/workingtime/{worker}/{project}")
-	public Optional<WorkingTime> updateBreakTimeSlototWorkingTimeForAWorkerOnAProject(@PathVariable String worker, @PathVariable String project,
+	@PutMapping("/workingtime/workingbreakslot/{worker}/{project}")
+	public Optional<WorkingTime> updateBreakTimeSloFor(@PathVariable String worker, @PathVariable String project,
 			@RequestBody BreakTimeSlot aNewBreakTimeSlot){
-		return timeRecordingServices.updateBreakTimeSlototWorkingTimeForAWorkerOnAProject(worker,project,aNewBreakTimeSlot);
+		return timeRecordingServices.updateBreakTimeSlotFor(worker,project,aNewBreakTimeSlot);
+	
+	}
+	
+	@PutMapping("/workingtime/workingtimeslot/{worker}/{project}")
+	public Optional<WorkingTime> updateTimeSloFor(@PathVariable String worker, @PathVariable String project,
+			@RequestBody WorkingTimeSlot aNewTimeSlot){
+		return timeRecordingServices.updateTimeSlotFor(worker,project,aNewTimeSlot);
 	
 	}
 }

@@ -5,20 +5,26 @@ import java.util.List;
 import org.springframework.stereotype.Component;
 
 
-public class WorkingDayInWorkingDaysImpl implements WrokingDayInWorkingDays {
+public class AWrokingDayImpl implements AWrokingDay {
 	private List<WorkingDay> workingDays;
 
 	@Override
-	public WorkingDay containsThisWorkignDay(String workingDay) {
+	public WorkingDay containsThisWorkignDay(String aworkingDay) {
 		for (WorkingDay aWorkingDay : workingDays) {
-			if (aWorkingDay.getWorkingDay().equals(workingDay))
+			if (aWorkingDay.getWorkingDay().equals(aworkingDay))
 				return aWorkingDay;
 		}
 		return null;
 	}
 
 	
-	public List<WorkingDay> getworkingDaysy() {
+	public AWrokingDayImpl(List<WorkingDay> workingDays) {
+	
+		this.workingDays = workingDays;
+	}
+
+
+	public List<WorkingDay> getworkingDays() {
 		return workingDays;
 	}
 

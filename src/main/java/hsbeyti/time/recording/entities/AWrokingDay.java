@@ -1,5 +1,5 @@
 package hsbeyti.time.recording.entities;
 
-public interface WrokingDayInWorkingDays {
+public interface AWrokingDay {
 	public WorkingDay containsThisWorkignDay(String workingDay);
 }

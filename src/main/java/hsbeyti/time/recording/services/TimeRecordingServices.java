@@ -52,7 +52,7 @@ public class TimeRecordingServices {
 
 	}
 
-	public List<Optional<WorkingTime>> getWorkingTime(String wrokerName) {
+	public List<Optional<WorkingTime>> getWorkingTimeForA(String wrokerName) {
 		List<Optional<WorkingTime>> workingTime = timeRecordingRepository.findByCoWorkerName(wrokerName);
 		if (!workingTime.get(0).isPresent()) {
 			logger.warn("document not found " + wrokerName);
@@ -74,8 +74,7 @@ public class TimeRecordingServices {
 		return workingTime;
 	}
 
-	public Optional<WorkingTime> updateBreakTimeSlototWorkingTimeForAWorkerOnAProject(String worker, String project,
-			BreakTimeSlot aNewBreakTimeSlot) {
+	public Optional<WorkingTime> updateBreakTimeSlotFor(String worker, String project, BreakTimeSlot aNewBreakTimeSlot) {
 		// check in database if such a document exist
 		Optional<WorkingTime> workingTimeDocument = isThereADocumentFor(worker, project);
 		if (!workingTimeDocument.isPresent()) {
@@ -86,31 +85,81 @@ public class TimeRecordingServices {
 		// document found in Database
 		logger.warn("document  found " + worker + "on Project " + project);
 		// get today WorkingDay
-		DateFormater getToDayDate = new TodayDateCreator(LocalDateTime.now());
-		String toDayDateString = getToDayDate.getTodayDateString();
+
+		String toDayDateString = getTodaDate();
 		// check if today date is allready exist in this document
-		WorkingDayInWorkingDaysImpl workingDayInWorkingDays = new WorkingDayInWorkingDaysImpl();
-		workingDayInWorkingDays.setworkingDays(workingTimeDocument.get().getWrokingDays());
-		WorkingDay workingDay = workingDayInWorkingDays.containsThisWorkignDay(toDayDateString);
+		AWrokingDayImpl aworkingDay = new AWrokingDayImpl(workingTimeDocument.get().getWrokingDays());
+		WorkingDay workingDay = aworkingDay.containsThisWorkignDay(toDayDateString);
 		if (workingDay != null) {
 			// add new BreakTiemSLot to
 			workingDay.getWorkingBreaks().add(aNewBreakTimeSlot);
 			timeRecordingRepository.save(workingTimeDocument.get());
 			return workingTimeDocument;
-		} else {// add first a new workingDay Date to teh document
-			WorkingDay aWorkingDay= new WorkingDay();
-			aWorkingDay.setWorkingDay(toDayDateString);
-			List<BreakTimeSlot> aBreakTimeSlot=  new ArrayList();
-			aBreakTimeSlot.add(aNewBreakTimeSlot);
-			aWorkingDay.setWorkingBreaks(aBreakTimeSlot);
-			List<WorkingTimeSlot> aWorkingTimeSlot=  new ArrayList();
-			aWorkingTimeSlot.add(new WorkingTimeSlot());
-			aWorkingDay.setWorkingTimeSlots(aWorkingTimeSlot);
+		} else {// add first a new workingDay to the document
+
+			List<BreakTimeSlot> aBreakTimeSlots = createBreakTimeSlots();
+			aBreakTimeSlots.add(aNewBreakTimeSlot);
+			WorkingDay aWorkingDay = createAWorkingDay(toDayDateString, aBreakTimeSlots, createWorkingTimeSlots());
 			workingTimeDocument.get().getWrokingDays().add(aWorkingDay);
 			timeRecordingRepository.save(workingTimeDocument.get());
 			return workingTimeDocument;
-			
 		}
+	}
+	public Optional<WorkingTime> updateTimeSlotFor(String worker, String project, WorkingTimeSlot aNewTimeSlot) {
+		// check in database if such a document exist
+		Optional<WorkingTime> workingTimeDocument = isThereADocumentFor(worker, project);
+		if (!workingTimeDocument.isPresent()) {
+			logger.warn("document not found " + worker + "on Project " + project);
+			throw new UserNotFoundException("Document not found for " + worker + "on Project " + project);
+
+		}
+		// document found in Database
+		logger.warn("document  found " + worker + "on Project " + project);
+		// get today WorkingDay
+
+		String toDayDateString = getTodaDate();
+		// check if today date is allready exist in this document
+		AWrokingDayImpl aworkingDay = new AWrokingDayImpl(workingTimeDocument.get().getWrokingDays());
+		WorkingDay workingDay = aworkingDay.containsThisWorkignDay(toDayDateString);
+		if (workingDay != null) {
+			// add new BreakTiemSLot to
+			workingDay.getWorkingTimeSlots().add(aNewTimeSlot);
+			timeRecordingRepository.save(workingTimeDocument.get());
+			return workingTimeDocument;
+		} else {// add first a new workingDay to the document
+
+			List<WorkingTimeSlot> aWorkingTimeSlot = createWorkingTimeSlots();
+			aWorkingTimeSlot.add(aNewTimeSlot);
+			WorkingDay aWorkingDay = createAWorkingDay(toDayDateString, createBreakTimeSlots(),aWorkingTimeSlot );
+			workingTimeDocument.get().getWrokingDays().add(aWorkingDay);
+			timeRecordingRepository.save(workingTimeDocument.get());
+			return workingTimeDocument;
+		}
+	}
+
+
+	public String getTodaDate() {
+		DateFormater getToDayDate = new TodayDateCreator(LocalDateTime.now());
+		return getToDayDate.getTodayDateString();
+	}
+
+	public WorkingDay createAWorkingDay(String todayDateString, List<BreakTimeSlot> aBreakTimeSlot,
+			List<WorkingTimeSlot> aWorkingTimeSlot) {
+
+		WorkingDay aWorkingDay = new WorkingDay();
+		aWorkingDay.setWorkingDay(todayDateString);
+		aWorkingDay.setWorkingBreaks(aBreakTimeSlot);
+		aWorkingDay.setWorkingTimeSlots(aWorkingTimeSlot);
+		return aWorkingDay;
+	}
+
+	public List<BreakTimeSlot> createBreakTimeSlots() {
+		return new ArrayList<BreakTimeSlot>();
+
+	}
+
+	public List<WorkingTimeSlot> createWorkingTimeSlots() {
+		return new ArrayList<WorkingTimeSlot>();
 
 	}
 }

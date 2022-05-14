@@ -2,32 +2,31 @@ package hsbeyti.time.recording.entities;
 
 import java.util.List;
 
+import javax.validation.constraints.Size;
+
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+// Document used to store co-worker working time on a specific project
+@Document(collection = "workingTimeF")
 
-@Document(collection = "wokingtimex")
-public class CoWorkerWorkingTimeOnAProject {
+public class WorkingTime {
 	@Id
 	private String id;
-	
+	@Field("worker_name")
+	@Size(min = 6,message ="Six charachters minimum")
 	private String coWorkerName;
-	
+	@Field("project_name")
 	private String projectName;
-
+	@Field("project_order_unmber")
 	private String projectOrderNumber;
-	
-	
+	@Field("wroking_days")
 	List<WorkingDay> wrokingDays;
-
-	
-	
-	
 
 	public String getId() {
 		return id;
 	}
+
 	public void setId(String id) {
 		this.id = id;
 	}

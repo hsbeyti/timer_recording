@@ -1,17 +1,15 @@
 package hsbeyti.time.recording.entities;
 
-
-
-public class WorkingTimeStot {
+public class WorkingTimeSlot {
 	private String start;
 	private String end;
 
-	
-	
-	
+	public WorkingTimeSlot() {
+		
+	}
 
-	public WorkingTimeStot(String start, String end) {
-	
+	public WorkingTimeSlot(String start, String end) {
+
 		this.start = start;
 		this.end = end;
 	}

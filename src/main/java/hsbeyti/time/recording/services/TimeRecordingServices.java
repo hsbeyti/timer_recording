@@ -23,6 +23,9 @@ import hsbeyti.time.recording.time.date.utility.TodayDateCreator;
 public class TimeRecordingServices {
 	Logger logger = LogManager.getLogger(TimeRecordingServices.class);
 	private String toDayDateString;
+
+	@Autowired
+	private AWrokingDay aworkingDay;
 	@Autowired
 	TimeRecordingRepository timeRecordingRepository;
 
@@ -64,7 +67,7 @@ public class TimeRecordingServices {
 		return workingTime;
 	}
 
-	public Optional<WorkingTime> getWorkingTimeForAWorkerOnAProject(String worker, String project) {
+	public Optional<WorkingTime> getWorkingTimeFor(String worker, String project) {
 		Optional<WorkingTime> workingTime = isThereADocumentFor(worker, project);
 		if (!workingTime.isPresent()) {
 			logger.warn("document not found " + worker + "on Project " + project);
@@ -89,8 +92,8 @@ public class TimeRecordingServices {
 		// get today WorkingDay
 		toDayDateString = getTodaDate();
 		// check if today date is allready exist in this document
-		AWrokingDayImpl aworkingDay = new AWrokingDayImpl(workingTimeDocument.get().getWrokingDays());
-		WorkingDay workingDay = aworkingDay.containsThisWorkignDay(toDayDateString);
+
+		WorkingDay workingDay = aworkingDay.containsThis(toDayDateString, workingTimeDocument.get().getWrokingDays());
 		if (workingDay != null) {
 			// add new BreakTiemSLot to
 			workingDay.getWorkingBreaks().add(aNewBreakTimeSlot);
@@ -124,9 +127,8 @@ public class TimeRecordingServices {
 
 		// get today WorkingDay
 		toDayDateString = getTodaDate();
-		// check if today date is allready exist in this document
-		AWrokingDayImpl aworkingDay = new AWrokingDayImpl(workingTimeDocument.get().getWrokingDays());
-		WorkingDay workingDay = aworkingDay.containsThisWorkignDay(toDayDateString);
+
+		WorkingDay workingDay = aworkingDay.containsThis(toDayDateString, workingTimeDocument.get().getWrokingDays());
 		if (workingDay != null) {
 			// add new BreakTiemSLot to
 			workingDay.getWorkingTimeSlots().add(aNewTimeSlot);
@@ -135,6 +137,12 @@ public class TimeRecordingServices {
 		} else {// add first a new workingDay to the document
 			return updateWorkingTimeSlot(workingTimeDocument, aNewTimeSlot);
 		}
+	}
+
+	public WorkingDay containsThisWorkingDaY(String toDayDateString, List<WorkingDay> workingDays) {
+
+		return aworkingDay.containsThis(toDayDateString, workingDays);
+
 	}
 
 	public Optional<WorkingTime> updateWorkingTimeSlot(Optional<WorkingTime> workingTimeDocument,

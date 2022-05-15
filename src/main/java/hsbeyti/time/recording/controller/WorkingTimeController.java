@@ -23,14 +23,14 @@ import hsbeyti.time.recording.services.TimeRecordingServices;
 
 @RestController
 @RequestMapping("/api/v1/timerecording")
-@ComponentScan("hsbeyti.time.recording.*")
+
 public class WorkingTimeController {
 
 	@Autowired
 	TimeRecordingServices timeRecordingServices;
 
 	@PostMapping("/workingtime")
-	public ResponseEntity<Object> createNewWorkingDocument(@RequestBody WorkingTime WorkingTimeOnAProject) {
+	public ResponseEntity<Object> createTimeRecording(@RequestBody WorkingTime WorkingTimeOnAProject) {
 		return timeRecordingServices.createTimeRecording(WorkingTimeOnAProject);
 	}
 
@@ -39,8 +39,8 @@ public class WorkingTimeController {
 		return timeRecordingServices.getWorkingTimeForA(worker);
 	}
 	@GetMapping("/workingtime/{worker}/{project}")
-	public Optional<WorkingTime> getWorkingTimeForAWorkerOnAProject(@PathVariable String worker,@PathVariable String project) {
-		return timeRecordingServices.getWorkingTimeForAWorkerOnAProject(worker,project);
+	public Optional<WorkingTime> getWorkingTimeFor(@PathVariable String worker,@PathVariable String project) {
+		return timeRecordingServices.getWorkingTimeFor(worker,project);
 	}
 	@PutMapping("/workingtime/workingbreakslot/{worker}/{project}")
 	public Optional<WorkingTime> updateBreakTimeSloFor(@PathVariable String worker, @PathVariable String project,

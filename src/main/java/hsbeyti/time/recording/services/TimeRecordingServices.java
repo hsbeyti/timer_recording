@@ -29,7 +29,7 @@ public class TimeRecordingServices {
 	@Autowired
 	TimeRecordingRepository timeRecordingRepository;
 
-	public ResponseEntity<Object> createTimeRecording(WorkingTime WorkingTimeOnAProject) {
+	public WorkingTime createTimeRecording(WorkingTime WorkingTimeOnAProject) {
 		// test if a document allready exist for this project and this co-worker
 		// extract co-worker name
 		// extract project name
@@ -40,11 +40,13 @@ public class TimeRecordingServices {
 		if (!workingTime.isPresent()) {
 
 			logger.warn("creating a new one document ");
-			WorkingTime savedWorkingTime = timeRecordingRepository.save(WorkingTimeOnAProject);
-			URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+			WorkingTime retWorkingTime= timeRecordingRepository.save(WorkingTimeOnAProject);
+			/*URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 					.buildAndExpand(savedWorkingTime.getCoWorkerName()).toUri();
 
-			return ResponseEntity.created(location).build();
+			return ResponseEntity.created(location).build();*/
+		
+			return retWorkingTime;
 		} else {
 			logger.warn("document allreday exsist");
 			throw new UserNotFoundException("Document allreday exsist for " + workerName);

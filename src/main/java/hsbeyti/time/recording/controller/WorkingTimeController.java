@@ -30,7 +30,7 @@ public class WorkingTimeController {
 	TimeRecordingServices timeRecordingServices;
 
 	@PostMapping("/workingtime")
-	public ResponseEntity<Object> createTimeRecording(@RequestBody WorkingTime WorkingTimeOnAProject) {
+	public WorkingTime createTimeRecording(@RequestBody WorkingTime WorkingTimeOnAProject) {
 		return timeRecordingServices.createTimeRecording(WorkingTimeOnAProject);
 	}
 

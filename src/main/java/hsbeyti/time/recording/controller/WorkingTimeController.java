@@ -29,17 +29,14 @@ public class WorkingTimeController {
 	@Autowired
 	TimeRecordingServices timeRecordingServices;
 
-	@PostMapping("/workingtime")
-	public WorkingTime createTimeRecording(@RequestBody WorkingTime WorkingTimeOnAProject) {
+	@PostMapping("/workingtime")//createTimeRecording
+	public ResponseEntity<WorkingTime> createTimeRecording(@RequestBody WorkingTime WorkingTimeOnAProject) {
 		return timeRecordingServices.createTimeRecording(WorkingTimeOnAProject);
 	}
 
-	@GetMapping("/workingtime/{worker}")
-	public List<Optional<WorkingTime>> getWorkingTimeForA(@Valid @PathVariable String worker) {
-		return timeRecordingServices.getWorkingTimeForA(worker);
-	}
+	
 	@GetMapping("/workingtime/{worker}/{project}")
-	public Optional<WorkingTime> getWorkingTimeFor(@PathVariable String worker,@PathVariable String project) {
+	public WorkingTime getWorkingTimeFor(@PathVariable String worker,@PathVariable String project) {
 		return timeRecordingServices.getWorkingTimeFor(worker,project);
 	}
 	@PutMapping("/workingtime/workingbreakslot/{worker}/{project}")

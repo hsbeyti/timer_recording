@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-
-
 import hsbeyti.time.recording.entities.*;
 import hsbeyti.time.recording.exceptions.UserNotFoundException;
 import hsbeyti.time.recording.repository.*;
@@ -37,13 +35,6 @@ public class TimeRecordingServices {
 	private AWrokingDay aworkingDay;
 	@Autowired
 	TimeRecordingRepository timeRecordingRepository;
-	/* @PostMapping("/customers")
-    public ResponseEntity<Customer> createCustomer(@RequestBody @Valid Customer customer) {
-        Customer savedCustomer = customersDao.save(customer);
-        return ResponseEntity.ok()
-                .location(URI.create("/api/customers/" + savedCustomer.getId()))
-                .body(savedCustomer);
-    }*/
 
 	public ResponseEntity<WorkingTime> createTimeRecording(WorkingTime WorkingTimeOnAProject) {
 		// test if a document allready exist for this project and this co-worker
@@ -58,22 +49,13 @@ public class TimeRecordingServices {
 
 			logger.warn("creating a new one document ");
 			WorkingTime retWorkingTime = timeRecordingRepository.save(WorkingTimeOnAProject);
-			/*
-			 * URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-			 * .buildAndExpand(savedWorkingTime.getCoWorkerName()).toUri();
-			 * 
-			 * return ResponseEntity.created(location).build();
-			 */
 
-			return ResponseEntity.ok()
-	                .location(URI.create("Created well"))
-	                .body(retWorkingTime);
+			return ResponseEntity.ok().location(URI.create("Created well")).body(retWorkingTime);
 		} else {
 
 			logger.warn("document allreday exsist");
-			return ResponseEntity.badRequest()
-            .location(URI.create("Allready Exist" + workerName+projectName))
-            .body(WorkingTimeOnAProject);
+			return ResponseEntity.badRequest().location(URI.create("Allready Exist" + workerName + projectName))
+					.body(WorkingTimeOnAProject);
 		}
 	}
 
@@ -81,14 +63,11 @@ public class TimeRecordingServices {
 		return timeRecordingRepository.findByCoWorkerNameAndProjectName(wroker_name, project_name);
 
 	}
-	
-	
-	
 
-	public WorkingTime getWorkingTimeFor(String worker, String project) {
+	public WorkingTime getWorkingTimeFor(String worker,/*WorkingOn*/ String project) {
 		return isThereADocumentFor(worker, project)
-				.orElseThrow(() -> new ResponseStatusException(NOT_FOUND,worker+project));
-		
+				.orElseThrow(() -> new ResponseStatusException(NOT_FOUND,"There is no Document for--> " + worker+ " working on-->" + project));
+
 	}
 
 	public Optional<WorkingTime> updateBreakTimeSlotFor(String worker, String project,
@@ -97,7 +76,7 @@ public class TimeRecordingServices {
 		Optional<WorkingTime> workingTimeDocument = isThereADocumentFor(worker, project);
 		if (!workingTimeDocument.isPresent()) {
 			logger.warn("document not found " + worker + "on Project " + project);
-			throw new UserNotFoundException();//"Document not found for " + worker + "on Project " + project
+			throw new UserNotFoundException();// "Document not found for " + worker + "on Project " + project
 
 		}
 		// document found in Database
@@ -134,7 +113,7 @@ public class TimeRecordingServices {
 		Optional<WorkingTime> workingTimeDocument = isThereADocumentFor(worker, project);
 		if (!workingTimeDocument.isPresent()) {
 			logger.warn("document not found " + worker + "on Project " + project);
-			throw new UserNotFoundException();//"Document not found for " + worker + "on Project " + project
+			throw new UserNotFoundException();// "Document not found for " + worker + "on Project " + project
 
 		}
 

@@ -7,18 +7,21 @@ import org.springframework.data.mongodb.core.mapping.Field;
 public class BreakTimeSlot {
 
 	private String description;
-	@Field("duration_in_imnutes")
-	private Integer durationsInMinutes;
+	private String duration;
+	
+	//private String duration;
     
 	public BreakTimeSlot() {
 		
 	}
 
-	public BreakTimeSlot(String description, Integer durationsInMinutes) {
-
+	
+	public BreakTimeSlot(String description, String duration) {
+		super();
 		this.description = description;
-		this.durationsInMinutes = durationsInMinutes;
+		this.duration = duration;
 	}
+
 
 	public String getDescription() {
 		return description;
@@ -28,15 +31,20 @@ public class BreakTimeSlot {
 		this.description = description;
 	}
 
-	public Integer getDurations() {
-		return durationsInMinutes;
+	public String getDuration() {
+		return duration;
 	}
 
-	public void setDurations(Integer durations) {
-		this.durationsInMinutes = durations;
+	public void setDuration(String duration) {
+		this.duration = duration;
 	}
 
-	@Override
+	
+
+
+
+
+	/*@Override
 	public boolean equals(Object obj) {
 
 		if (this == obj)
@@ -53,6 +61,6 @@ public class BreakTimeSlot {
 	public String toString() {
 
 		return "Break{" + "description=" + this.description + ", durations='" + this.durationsInMinutes + '}';
-	}
+	}*/
 
 }

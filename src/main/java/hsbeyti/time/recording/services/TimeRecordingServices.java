@@ -35,8 +35,11 @@ public class TimeRecordingServices {
 	private AWrokingDay aworkingDay;
 	@Autowired
 	TimeRecordingRepository timeRecordingRepository;
+	public WorkingTime saveTimeRecording(WorkingTime WorkingTimeOnAProject) {
+	return  timeRecordingRepository.save(WorkingTimeOnAProject);
+	}
 
-	public ResponseEntity<WorkingTime> createTimeRecording(WorkingTime WorkingTimeOnAProject) {
+	public WorkingTime createTimeRecording(WorkingTime WorkingTimeOnAProject) {
 		// test if a document allready exist for this project and this co-worker
 		// extract co-worker name
 		// extract project name
@@ -48,14 +51,13 @@ public class TimeRecordingServices {
 		if (!workingTime.isPresent()) {
 
 			logger.warn("creating a new one document ");
-			WorkingTime retWorkingTime = timeRecordingRepository.save(WorkingTimeOnAProject);
-
-			return ResponseEntity.ok().location(URI.create("Created well")).body(retWorkingTime);
+			return timeRecordingRepository.save(WorkingTimeOnAProject);
+              
+			//return ResponseEntity.ok().location(URI.create("Created well")).body(retWorkingTime);
 		} else {
 
 			logger.warn("document allreday exsist");
-			return ResponseEntity.badRequest().location(URI.create("Allready Exist" + workerName + projectName))
-					.body(WorkingTimeOnAProject);
+			throw new UserNotFoundException();// "Document not found for " + worker + "on Project " + project
 		}
 	}
 
@@ -92,11 +94,11 @@ public class TimeRecordingServices {
 			timeRecordingRepository.save(workingTimeDocument.get());
 			return workingTimeDocument;
 		} else {// add first a new workingDay to the document
-			return updateBreakTimeSlot(workingTimeDocument, aNewBreakTimeSlot);
+			return updateBreakTimeSlotFor(workingTimeDocument, aNewBreakTimeSlot);
 		}
 	}
 
-	public Optional<WorkingTime> updateBreakTimeSlot(Optional<WorkingTime> workingTimeDocument,
+	public Optional<WorkingTime> updateBreakTimeSlotFor(Optional<WorkingTime> workingTimeDocument,
 			BreakTimeSlot aNewBreakTimeSlot) {
 
 		List<BreakTimeSlot> aBreakTimeSlots = createBreakTimeSlots();

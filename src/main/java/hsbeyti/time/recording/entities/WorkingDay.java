@@ -6,11 +6,11 @@ import java.util.List;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 public class WorkingDay {
-	
+	@Field("working_day")
 	private String workingDay;
-
+	@Field("working_timeSlots")
 	private List<WorkingTimeSlot> workingTimeSlots;
-	
+	@Field("working_breaks")
 	private List<BreakTimeSlot> workingBreaks;
 	
 

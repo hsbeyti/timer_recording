@@ -62,7 +62,7 @@ public class TimeRecordingServices {
 		} else {
 
 			logger.warn("document allreday exsist");
-			throw new UserAllreadExistException();// "Document not found for " + worker + "on Project " + project
+			throw new UserAllreadExistException("document allreday exsist for " + workerName + "on Project " + projectName);// "Document not found for " + worker + "on Project " + project
 		}
 	}
 
@@ -75,7 +75,7 @@ public class TimeRecordingServices {
 	public WorkingTime getWorkingTimeFor(String worker, /* WorkingOn */ String project) {
 		WorkingTime workingTime =	isThereADocumentFor(worker, project);
 		if ( workingTime== null)
-			throw new UserNotFoundException();
+			throw new UserNotFoundException("document not found " + worker + "on Project " + project);
 		return workingTime; 
 	}
 
@@ -84,7 +84,7 @@ public class TimeRecordingServices {
 		WorkingTime workingTimeDocument = isThereADocumentFor(worker, project);
 		if (workingTimeDocument == null) {
 			logger.warn("document not found " + worker + "on Project " + project);
-			throw new UserNotFoundException();// "Document not found for " + worker + "on Project " + project
+			throw new UserNotFoundException("document not found " + worker + "on Project " + project);// "Document not found for " + worker + "on Project " + project
 
 		}
 		// document found in Database
@@ -122,7 +122,7 @@ public class TimeRecordingServices {
 		WorkingTime workingTimeDocument = isThereADocumentFor(worker, project);
 		if (workingTimeDocument == null) {
 			logger.warn("document not found " + worker + "on Project " + project);
-			throw new UserNotFoundException();// "Document not found for " + worker + "on Project " + project
+			throw new UserNotFoundException("document not found " + worker + "on Project " + project);// "Document not found for " + worker + "on Project " + project
 
 		}
 

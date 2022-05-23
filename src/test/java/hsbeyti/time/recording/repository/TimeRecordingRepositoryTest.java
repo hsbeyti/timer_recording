@@ -2,6 +2,7 @@ package hsbeyti.time.recording.repository;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.catalina.core.ApplicationContext;
@@ -63,4 +64,31 @@ class TimeRecordingRepositoryTest {
 
 	}
 
+	@DisplayName("Retrieve a document for a given working ")
+	@Test
+	void givenWorker_whenSearchedFor_thenRetrunWorkDocument() {
+		// give a worker name and a project name
+		String worker = "test123";
+
+		// when searched for return complete Document
+		List<WorkingTime> workingTime = timeRecordingRepository.findByCoWorkerName(worker);
+		System.out.print(workingTime.get(0));
+		// then the returned Object is not null
+		assertNotNull(workingTime.get(0));
+
+	}
+
+	@DisplayName("Fail to Retrieve a document for a given working ")
+	@Test
+	void givenWorker_whenSearchedFor_thenRetrunNull() {
+		// give a worker name and a project name
+		String worker = "Houssein";
+
+		// when searched for return complete Document
+		List<WorkingTime> workingTime = timeRecordingRepository.findByCoWorkerName(worker);
+
+		// then the returned Object is not null
+		assertTrue(workingTime.isEmpty());
+
+	}
 }

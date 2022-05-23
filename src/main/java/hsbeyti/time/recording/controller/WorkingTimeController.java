@@ -30,7 +30,7 @@ public class WorkingTimeController {
 	TimeRecordingServices timeRecordingServices;
 
 	@PostMapping("/workingtime")//createTimeRecording
-	public WorkingTime createTimeRecording(@RequestBody WorkingTime WorkingTimeOnAProject) {
+	public ResponseEntity<WorkingTime> createTimeRecording(@RequestBody WorkingTime WorkingTimeOnAProject) {
 		//return timeRecordingServices.saveTimeRecording(WorkingTimeOnAProject);
 		return timeRecordingServices.createTimeRecording(WorkingTimeOnAProject);
 	}
@@ -40,17 +40,18 @@ public class WorkingTimeController {
 	public WorkingTime getWorkingTimeFor(@PathVariable String worker,@PathVariable String project) {
 		return timeRecordingServices.getWorkingTimeFor(worker,project);
 	}
+	
 	@PutMapping("/workingtime/workingbreakslot/{worker}/{project}")
-	public Optional<WorkingTime> updateBreakTimeSloFor(@PathVariable String worker, @PathVariable String project,
+	public ResponseEntity<WorkingTime> updateBreakTimeSloFor(@PathVariable String worker, @PathVariable String project,
 			@RequestBody BreakTimeSlot aNewBreakTimeSlot){
 		return timeRecordingServices.updateBreakTimeSlotFor(worker,project,aNewBreakTimeSlot);
 	
 	}
 	
 	@PutMapping("/workingtime/workingtimeslot/{worker}/{project}")
-	public Optional<WorkingTime> updateTimeSloFor(@PathVariable String worker, @PathVariable String project,
+	public ResponseEntity<WorkingTime> updateTimeSloFor(@PathVariable String worker, @PathVariable String project,
 			@RequestBody WorkingTimeSlot aNewTimeSlot){
 		return timeRecordingServices.updateTimeSlotFor(worker,project,aNewTimeSlot);
 	
-	}
+	}	
 }

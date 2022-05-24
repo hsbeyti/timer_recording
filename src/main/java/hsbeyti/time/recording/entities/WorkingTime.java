@@ -4,9 +4,16 @@ import java.util.List;
 
 import javax.validation.constraints.Size;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.stereotype.Component;
+
+
+
+
 // Document used to store co-worker working time on a specific project
 @Document(collection = "workingTime")
 
@@ -14,7 +21,7 @@ public class WorkingTime {
 	@Id
 	private String id;
 	@Field("worker_name")
-	@Size(min = 6,message ="Six charachters minimum")
+	@Size(min = 6, message = "Six charachters minimum")
 	private String coWorkerName;
 	@Field("project_name")
 	private String projectName;
@@ -22,6 +29,8 @@ public class WorkingTime {
 	private String projectOrderNumber;
 	@Field("wroking_days")
 	List<WorkingDay> wrokingDays;
+
+	
 
 	public String getId() {
 		return id;
@@ -61,6 +70,12 @@ public class WorkingTime {
 
 	public void setWrokingDays(List<WorkingDay> wrokingDays) {
 		this.wrokingDays = wrokingDays;
+	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return super.toString();
 	}
 
 }

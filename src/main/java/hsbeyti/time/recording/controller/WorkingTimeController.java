@@ -38,18 +38,18 @@ public class WorkingTimeController {
 	
 	@GetMapping("/workingtime/{worker}/{project}")
 	public WorkingTime getWorkingTimeFor(@PathVariable String worker,@PathVariable String project) {
-		return timeRecordingServices.getWorkingTimeFor(worker,project);
+		return timeRecordingServices.getWorkingTimeFor(worker,/* Working on */project);
 	}
 	
 	@PutMapping("/workingtime/workingbreakslot/{worker}/{project}")
-	public ResponseEntity<WorkingTime> updateBreakTimeSloFor(@PathVariable String worker, @PathVariable String project,
+	public ResponseEntity<WorkingTime> updateBreakTimeSloFor(@PathVariable String worker,/* Working on */ @PathVariable String project,
 			@RequestBody BreakTimeSlot aNewBreakTimeSlot){
 		return timeRecordingServices.updateBreakTimeSlotFor(worker,project,aNewBreakTimeSlot);
 	
 	}
 	
 	@PutMapping("/workingtime/workingtimeslot/{worker}/{project}")
-	public ResponseEntity<WorkingTime> updateTimeSloFor(@PathVariable String worker, @PathVariable String project,
+	public ResponseEntity<WorkingTime> updateTimeSloFor(@PathVariable String worker,/* Working on */ @PathVariable String project,
 			@RequestBody WorkingTimeSlot aNewTimeSlot){
 		return timeRecordingServices.updateTimeSlotFor(worker,project,aNewTimeSlot);
 	

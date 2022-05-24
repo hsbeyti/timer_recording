@@ -1,0 +1,50 @@
+{
+    "id": "62889140a6c63c6e5202d023",
+    "coWorkerName": "ww ss",
+    "projectName": "ww Starp",
+    "projectOrderNumber": "23ffr55",
+    "wrokingDays": [
+        {
+            "workingDay": "today date",
+            "workingTimeSlots": [
+                {
+                    "start": "30",
+                    "end": "30"
+                },
+                {
+                    "start": "30",
+                    "end": "30"
+                }
+            ],
+            "workingBreaks": [
+                {
+                    "description": null,
+                    "duration": null
+                }
+            ]
+        },
+        {
+            "workingDay": "23.05.2022",
+            "workingTimeSlots": [
+                {
+                    "start": "30",
+                    "end": "30"
+                }
+            ],
+            "workingBreaks": [
+                {
+                    "description": null,
+                    "duration": null
+                },
+                {
+                    "description": null,
+                    "duration": null
+                },
+                {
+                    "description": "50",
+                    "duration": "20"
+                }
+            ]
+        }
+    ]
+}

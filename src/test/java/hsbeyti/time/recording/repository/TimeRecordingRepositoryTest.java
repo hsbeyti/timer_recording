@@ -42,7 +42,7 @@ class TimeRecordingRepositoryTest {
 		String worker = "test123";
 		String peoject = "ww Starp";
 
-		// when searched for return complete Document
+		// when searched for 
 		WorkingTime workingTime = timeRecordingRepository.findByCoWorkerNameAndProjectName(worker, peoject);
 		System.out.print(workingTime);
 		// then the returned Object is not null
@@ -56,10 +56,10 @@ class TimeRecordingRepositoryTest {
 		String worker = "Houssein";
 		String peoject = "gitterstar";
 
-		// when searched for return complete Document
+		// when searched for 
 		WorkingTime workingTime = timeRecordingRepository.findByCoWorkerNameAndProjectName(worker, peoject);
 		System.out.print(workingTime);
-		// then the returned Object is not null
+		// then the returned Object is  null
 		assertNull(workingTime);
 
 	}
@@ -70,7 +70,7 @@ class TimeRecordingRepositoryTest {
 		// give a worker name and a project name
 		String worker = "test123";
 
-		// when searched for return complete Document
+		// when searched for 
 		List<WorkingTime> workingTime = timeRecordingRepository.findByCoWorkerName(worker);
 		System.out.print(workingTime.get(0));
 		// then the returned Object is not null
@@ -78,16 +78,16 @@ class TimeRecordingRepositoryTest {
 
 	}
 
-	@DisplayName("Fail to Retrieve a document for a given working ")
+	@DisplayName("Fail to Retrieve a document for a given worker ")
 	@Test
 	void givenWorker_whenSearchedFor_thenRetrunNull() {
 		// give a worker name and a project name
 		String worker = "Houssein";
 
-		// when searched for return complete Document
+		// when searched for a Document
 		List<WorkingTime> workingTime = timeRecordingRepository.findByCoWorkerName(worker);
 
-		// then the returned Object is not null
+		// then the returned Document is  empty
 		assertTrue(workingTime.isEmpty());
 
 	}

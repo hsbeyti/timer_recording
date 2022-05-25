@@ -38,39 +38,34 @@ public class TimeRecordingServices {
 		String errorMessage = "Document exsists for " + workerName + " working on Project " 
 		         + projectName;
 
-		// avoinding duplicate document
+		// Avoinding duplicate document
 		WorkingTime workingTime = timeRecordingRepository.findByCoWorkerNameAndProjectName(workerName, projectName);
 		if (workingTime != null)
 			throw new UserAllreadExistException(errorMessage);
-		logger.debug("creating a new one document ");
+		logger.debug("Saving a new document ");
 		workingTime = timeRecordingRepository.save(WorkingTimeOnAProject);
-		logger.debug("created successfully a new  document: " + workingTime);
+		logger.debug("Saved successfully a new document: " + workingTime);
 		return new ResponseEntity(workingTime, HttpStatus.CREATED);
 
 	}
 
-	public WorkingTime isThereADocumentFor(String wroker_name, /* Working on */ String project_name) {
-		WorkingTime workingTime = timeRecordingRepository.findByCoWorkerNameAndProjectName(wroker_name, project_name);
-		if (workingTime == null)
-			throw new UserNotFoundException(getdocumentNotFoundMessage(wroker_name, project_name));
-		return workingTime;
-	}
+	
 
 	public String getdocumentFoundMessage(String worker, String project) {
-		return "document  found " + worker + "on Project " + project;
+		return "document found " + worker + "on Project " + project;
 	}
 
 	public String getdocumentNotFoundMessage(String worker, String project) {
-		return "document  Not found " + worker + "on Project " + project;
+		return "document Not found " + worker + "on Project " + project;
 	}
 
 	public String getdocumentUpdatedMessage(String worker, String project) {
-		return "document  Updated for " + worker + "on Project " + project;
+		return "document updated for " + worker + "on Project " + project;
 	}
 
 	public WorkingTime saveTimeRecording(WorkingTime WorkingTimeOnAProject) {
 		WorkingTime workingTime = timeRecordingRepository.save(WorkingTimeOnAProject);
-		logger.debug("created successfully a new  document: " + workingTime);
+		logger.debug("Saveded successfully a new  document: " + workingTime);
 		return workingTime;
 	}
 
@@ -79,7 +74,12 @@ public class TimeRecordingServices {
 		return isThereADocumentFor(worker, project);
 
 	}
-
+	public WorkingTime isThereADocumentFor(String wroker_name, /* Working on */ String project_name) {
+		WorkingTime workingTime = timeRecordingRepository.findByCoWorkerNameAndProjectName(wroker_name, project_name);
+		if (workingTime == null)
+			throw new UserNotFoundException(getdocumentNotFoundMessage(wroker_name, project_name));
+		return workingTime;
+	}
 	// @PutMapping("/workingtime/workingbreakslot/{worker}/{project}")
 	public ResponseEntity<WorkingTime> updateBreakTimeSlotFor(String worker, /* Working on */ String project,
 			/* and having a break of */BreakTimeSlot aNewBreakTimeSlot) {

@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import hsbeyti.time.recording.entities.*;
-import hsbeyti.time.recording.repository.TimeRecordingRepository;
+import hsbeyti.time.recording.exceptions.NoExistingWorkTimeException;
 import hsbeyti.time.recording.services.TimeRecordingServices;
 
 @ExtendWith(MockitoExtension.class)
@@ -70,6 +70,7 @@ class WorkingTimeControllerTest {
 		WorkingDay.setWorkingTimeSlots(workingTimeSlots);
 		WorkingDay.setWorkingBreaks(breakTimeSlots);
 		workingTime.getWrokingDays().add(WorkingDay);
+
 	}
 
 	@BeforeEach
@@ -83,9 +84,9 @@ class WorkingTimeControllerTest {
 				.addFilters(new WorkingTimeControllerFilter()).build();
 
 	}
-
 	@Test
-	public void canCreateANewWorkingTimeo() throws Exception {
+	public void canCreateANewWorkingTime() throws Exception {
+
 		// when
 		MockHttpServletResponse response = mvc.perform(post("/api/v1/timerecording/workingtime/")
 				.contentType(MediaType.APPLICATION_JSON).content(jsonWorkingTime.write(workingTime).getJson()))
@@ -95,4 +96,40 @@ class WorkingTimeControllerTest {
 		assertThat(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
 	}
 
+	@Test
+	public void canRetrieveByWrokerAndProjectNamesWhenExists() throws Exception {
+		// given
+
+		given(timeRecordingServices.getWorkingTimeFor("testWroker", "testProject"))
+		.willReturn(workingTime);
+		// when
+		MockHttpServletResponse response = mvc.perform(
+				get("/api/v1/timerecording/workingtime/testWroker/testProject").contentType(MediaType.APPLICATION_JSON))
+				.andReturn().getResponse();
+
+		// then
+		// WorkingTime workingTimetw=initialize();
+		assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+		 assertThat(response.getContentAsString()).isEqualTo(
+		 jsonWorkingTime.write(workingTime).getJson()
+		 );
+	}
+	
+	@Test
+    public void canRetrieveByWrokerAndProjectNamesWhenDoesNotExist() throws Exception {
+        // given
+        given(timeRecordingServices.getWorkingTimeFor("testWroker1", "testProject"))
+                .willThrow(new NoExistingWorkTimeException());
+
+        // when
+        MockHttpServletResponse response = mvc.perform(
+                get("/api/v1/timerecording/workingtime/testWroker1/testProject")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+
+        // then
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        assertThat(response.getContentAsString()).isEmpty();
+    }
+	
 }

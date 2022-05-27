@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -42,7 +43,7 @@ class TimeRecordingServicesTest {
 	AWrokingDay aWorkingDay;
 	@InjectMocks
 	private TimeRecordingServices timeRecordingServices;
-
+	
 	private WorkingTime workingTime;
 	private WorkingTimeSlot workingTimeSlot;
 	private WorkingDay WorkingDay;
@@ -51,21 +52,28 @@ class TimeRecordingServicesTest {
 	@BeforeEach
 	public void setup() {
 
-		workingTime = new WorkingTime();
+		workingTimeSlot = new WorkingTimeSlot();
+		workingTimeSlot.setStart("70");
+		workingTimeSlot.setEnd("90");
+		List<WorkingTimeSlot> workingTimeSlots = new ArrayList<WorkingTimeSlot>();
+		workingTimeSlots.add(workingTimeSlot);
 
+		breakTimeSlot = new BreakTimeSlot();
+		breakTimeSlot.setDescription("Lunch");
+		breakTimeSlot.setDuration("30");
+		List<BreakTimeSlot> breakTimeSlots = new ArrayList<BreakTimeSlot>();
+		breakTimeSlots.add(breakTimeSlot);
+
+		workingTime = new WorkingTime();
 		workingTime.setCoWorkerName("testWroker");
 		workingTime.setProjectName("testProject");
 		workingTime.setProjectOrderNumber("testOrder");
 		workingTime.setWrokingDays(new ArrayList<WorkingDay>());
 		WorkingDay = new WorkingDay();
 		WorkingDay.setWorkingDay("26.05.2022");
+		WorkingDay.setWorkingTimeSlots(workingTimeSlots);
+		WorkingDay.setWorkingBreaks(breakTimeSlots);
 		workingTime.getWrokingDays().add(WorkingDay);
-		workingTimeSlot = new WorkingTimeSlot();
-		workingTimeSlot.setStart("70");
-		workingTimeSlot.setEnd("90");
-		breakTimeSlot = new BreakTimeSlot();
-		breakTimeSlot.setDescription("Lunch");
-		breakTimeSlot.setDuration("30");
 	}
 
 	@DisplayName("JUnit test for succefully saving a WorkingTime document ")
@@ -168,6 +176,7 @@ class TimeRecordingServicesTest {
 		assertEquals(HttpStatus.OK, savedOne.getStatusCode());
 
 	}
+
 	// update BreakTimetFor
 	@DisplayName("JUnit test for failing to update an existing WorkingTime  ")
 	@Test
@@ -179,30 +188,31 @@ class TimeRecordingServicesTest {
 				workingTime.getProjectName())).willReturn(null);
 		// when - creating a new document
 		assertThrows(UserNotFoundException.class, () -> {
-			timeRecordingServices.updateBreakTimeSlotFor(workingTime.getCoWorkerName(),
-					workingTime.getProjectName(), breakTimeSlot);
+			timeRecordingServices.updateBreakTimeSlotFor(workingTime.getCoWorkerName(), workingTime.getProjectName(),
+					breakTimeSlot);
 		});
 
 		// then - it must not be to save a new WrokingTime document
 		verify(timeRecordingRepository, never()).save(workingTime);
 	}
+
 	// update BreakTimeSlotFor
-		@DisplayName("JUnit test for successfully Updating an existing WorkingTime ")
-		@Test
-		public void givenAWorkerAprojectAndABreakTimeSlot_whenUpdatingExistingDocument_thenReturnDocumentObject()
-				throws IOException {
+	@DisplayName("JUnit test for successfully Updating an existing WorkingTime ")
+	@Test
+	public void givenAWorkerAprojectAndABreakTimeSlot_whenUpdatingExistingDocument_thenReturnDocumentObject()
+			throws IOException {
 
-			// given -
-			BDDMockito.given(timeRecordingRepository.findByCoWorkerNameAndProjectName(workingTime.getCoWorkerName(),
-					workingTime.getProjectName())).willReturn(workingTime);
-			// given -
-			BDDMockito.given(aWorkingDay.containsThis("", workingTime.getWrokingDays())).willReturn(WorkingDay);
-			// when - updating a new document
-			ResponseEntity<WorkingTime> savedOne = timeRecordingServices.updateBreakTimeSlotFor(workingTime.getCoWorkerName(),
-					workingTime.getProjectName(), breakTimeSlot);
+		// given -
+		BDDMockito.given(timeRecordingRepository.findByCoWorkerNameAndProjectName(workingTime.getCoWorkerName(),
+				workingTime.getProjectName())).willReturn(workingTime);
+		// given -
+		BDDMockito.given(aWorkingDay.containsThis("", workingTime.getWrokingDays())).willReturn(WorkingDay);
+		// when - updating a new document
+		ResponseEntity<WorkingTime> savedOne = timeRecordingServices
+				.updateBreakTimeSlotFor(workingTime.getCoWorkerName(), workingTime.getProjectName(), breakTimeSlot);
 
-			// then - it must return HttpStatus.CREATED
-			assertEquals(HttpStatus.OK, savedOne.getStatusCode());
+		// then - it must return HttpStatus.CREATED
+		assertEquals(HttpStatus.OK, savedOne.getStatusCode());
 
-		}
+	}
 }

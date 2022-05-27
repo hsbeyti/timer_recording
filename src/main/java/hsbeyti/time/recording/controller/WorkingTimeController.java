@@ -1,5 +1,5 @@
 package hsbeyti.time.recording.controller;
-
+import org.springframework.http.HttpStatus;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import hsbeyti.time.recording.entities.*;
@@ -28,12 +29,13 @@ public class WorkingTimeController {
 
 	@Autowired
 	TimeRecordingServices timeRecordingServices;
-
+	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/workingtime")//createTimeRecording
 	public ResponseEntity<WorkingTime> createTimeRecording(@RequestBody WorkingTime WorkingTimeOnAProject) {
 		//return timeRecordingServices.saveTimeRecording(WorkingTimeOnAProject);
-		return timeRecordingServices.createTimeRecording(WorkingTimeOnAProject);
-	}
+		ResponseEntity<WorkingTime> response=timeRecordingServices.createTimeRecording(WorkingTimeOnAProject);
+	     return response;
+	  }
 
 	
 	@GetMapping("/workingtime/{worker}/{project}")

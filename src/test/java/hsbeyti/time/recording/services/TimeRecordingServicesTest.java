@@ -6,10 +6,6 @@ import static org.mockito.Mockito.verify;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Resource;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,19 +13,15 @@ import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import hsbeyti.time.recording.entities.*;
 import hsbeyti.time.recording.exceptions.*;
+import hsbeyti.time.recording.initilization.WorkingTimeInitialisationInterface;
+import hsbeyti.time.recording.initilization.WorkingTimeInitializationImpl;
 import hsbeyti.time.recording.repository.TimeRecordingRepository;
 import hsbeyti.time.recording.timerecording.TimerecordingApplication;
 
@@ -43,37 +35,16 @@ class TimeRecordingServicesTest {
 	AWrokingDay aWorkingDay;
 	@InjectMocks
 	private TimeRecordingServices timeRecordingServices;
-	
+
 	private WorkingTime workingTime;
-	private WorkingTimeSlot workingTimeSlot;
-	private WorkingDay WorkingDay;
-	private BreakTimeSlot breakTimeSlot;
+	private WorkingTimeInitialisationInterface workingTimeInitializationImpl;
+	private WorkingDay workingDay;
 
 	@BeforeEach
 	public void setup() {
 
-		workingTimeSlot = new WorkingTimeSlot();
-		workingTimeSlot.setStart("70");
-		workingTimeSlot.setEnd("90");
-		List<WorkingTimeSlot> workingTimeSlots = new ArrayList<WorkingTimeSlot>();
-		workingTimeSlots.add(workingTimeSlot);
-
-		breakTimeSlot = new BreakTimeSlot();
-		breakTimeSlot.setDescription("Lunch");
-		breakTimeSlot.setDuration("30");
-		List<BreakTimeSlot> breakTimeSlots = new ArrayList<BreakTimeSlot>();
-		breakTimeSlots.add(breakTimeSlot);
-
-		workingTime = new WorkingTime();
-		workingTime.setCoWorkerName("testWroker");
-		workingTime.setProjectName("testProject");
-		workingTime.setProjectOrderNumber("testOrder");
-		workingTime.setWrokingDays(new ArrayList<WorkingDay>());
-		WorkingDay = new WorkingDay();
-		WorkingDay.setWorkingDay("26.05.2022");
-		WorkingDay.setWorkingTimeSlots(workingTimeSlots);
-		WorkingDay.setWorkingBreaks(breakTimeSlots);
-		workingTime.getWrokingDays().add(WorkingDay);
+		workingTimeInitializationImpl = new WorkingTimeInitializationImpl();
+		workingTime = workingTimeInitializationImpl.createAWorkingTimeObject("testWorker","testProject");
 	}
 
 	@DisplayName("JUnit test for succefully saving a WorkingTime document ")
@@ -150,7 +121,7 @@ class TimeRecordingServicesTest {
 		// when - creating a new document
 		assertThrows(UserNotFoundException.class, () -> {
 			timeRecordingServices.updateTimeSlotFor(workingTime.getCoWorkerName(), workingTime.getProjectName(),
-					workingTimeSlot);
+					workingTimeInitializationImpl.getWorkingTimeCreatedObject().getWorkingTimeSlot());
 		});
 
 		// then - it must not be to save a new WrokingTime document
@@ -167,10 +138,11 @@ class TimeRecordingServicesTest {
 		BDDMockito.given(timeRecordingRepository.findByCoWorkerNameAndProjectName(workingTime.getCoWorkerName(),
 				workingTime.getProjectName())).willReturn(workingTime);
 		// given -
-		BDDMockito.given(aWorkingDay.containsThis("", workingTime.getWrokingDays())).willReturn(WorkingDay);
+		BDDMockito.given(aWorkingDay.containsThis("", workingTime.getWrokingDays())).willReturn(workingDay);
 		// when - updating a new document
 		ResponseEntity<WorkingTime> savedOne = timeRecordingServices.updateTimeSlotFor(workingTime.getCoWorkerName(),
-				workingTime.getProjectName(), workingTimeSlot);
+				workingTime.getProjectName(),
+				workingTimeInitializationImpl.getWorkingTimeCreatedObject().getWorkingTimeSlot());
 
 		// then - it must return HttpStatus.CREATED
 		assertEquals(HttpStatus.OK, savedOne.getStatusCode());
@@ -189,7 +161,7 @@ class TimeRecordingServicesTest {
 		// when - creating a new document
 		assertThrows(UserNotFoundException.class, () -> {
 			timeRecordingServices.updateBreakTimeSlotFor(workingTime.getCoWorkerName(), workingTime.getProjectName(),
-					breakTimeSlot);
+					workingTimeInitializationImpl.getWorkingTimeCreatedObject().getBreakTimeSlot());
 		});
 
 		// then - it must not be to save a new WrokingTime document
@@ -206,10 +178,11 @@ class TimeRecordingServicesTest {
 		BDDMockito.given(timeRecordingRepository.findByCoWorkerNameAndProjectName(workingTime.getCoWorkerName(),
 				workingTime.getProjectName())).willReturn(workingTime);
 		// given -
-		BDDMockito.given(aWorkingDay.containsThis("", workingTime.getWrokingDays())).willReturn(WorkingDay);
+		BDDMockito.given(aWorkingDay.containsThis("", workingTime.getWrokingDays())).willReturn(workingDay);
 		// when - updating a new document
-		ResponseEntity<WorkingTime> savedOne = timeRecordingServices
-				.updateBreakTimeSlotFor(workingTime.getCoWorkerName(), workingTime.getProjectName(), breakTimeSlot);
+		ResponseEntity<WorkingTime> savedOne = timeRecordingServices.updateBreakTimeSlotFor(
+				workingTime.getCoWorkerName(), workingTime.getProjectName(),
+				workingTimeInitializationImpl.getWorkingTimeCreatedObject().getBreakTimeSlot());
 
 		// then - it must return HttpStatus.CREATED
 		assertEquals(HttpStatus.OK, savedOne.getStatusCode());

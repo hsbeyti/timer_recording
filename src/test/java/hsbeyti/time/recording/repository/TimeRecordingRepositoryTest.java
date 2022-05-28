@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.catalina.core.ApplicationContext;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
 import hsbeyti.time.recording.entities.WorkingTime;
+import hsbeyti.time.recording.initilization.WorkingTimeInitialisationInterface;
+import hsbeyti.time.recording.initilization.WorkingTimeInitializationImpl;
 import hsbeyti.time.recording.timerecording.TimerecordingApplication;
 
 @SpringBootTest(classes = TimerecordingApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -27,22 +30,27 @@ class TimeRecordingRepositoryTest {
 
 	@Value("${spring.application.name}")
 	private String testProp;
+	private String worker = "Houssein";
+	private String peoject = "gitterstar";
+	private WorkingTime workingTime;
+	private WorkingTimeInitialisationInterface workingTimeInitializationImpl;
 
 	@BeforeEach
 	public void setup() {
-		String worker = "Houssein";
-		String peoject = "gitterstar";
-		System.out.print(testProp);
+		timeRecordingRepository.deleteAll();
+		workingTimeInitializationImpl = new WorkingTimeInitializationImpl();
+		workingTime = workingTimeInitializationImpl.createAWorkingTimeObject(worker, peoject);
+
+		timeRecordingRepository.save(workingTime);
 	}
+
+	
 
 	@DisplayName("Retrieve a document for a given working working on aproject")
 	@Test
 	void givenWorkerandProject_whenSearchedFor_thenRetrunWorkDocument() {
-		// give a worker name and a project name
-		String worker = "test123";
-		String peoject = "ww Starp";
 
-		// when searched for 
+		// when searched for
 		WorkingTime workingTime = timeRecordingRepository.findByCoWorkerNameAndProjectName(worker, peoject);
 		System.out.print(workingTime);
 		// then the returned Object is not null
@@ -52,14 +60,11 @@ class TimeRecordingRepositoryTest {
 
 	@Test // not found
 	void givenWorkerandProject_whenSearchedFor_thenRetrunNull() {
-		// give a worker name and a project name
-		String worker = "Houssein";
-		String peoject = "gitterstar";
 
-		// when searched for 
-		WorkingTime workingTime = timeRecordingRepository.findByCoWorkerNameAndProjectName(worker, peoject);
-		System.out.print(workingTime);
-		// then the returned Object is  null
+		// when searched for
+		WorkingTime workingTime = timeRecordingRepository.findByCoWorkerNameAndProjectName("AnyNameNotThere", peoject);
+
+		// then the returned Object is null
 		assertNull(workingTime);
 
 	}
@@ -67,10 +72,8 @@ class TimeRecordingRepositoryTest {
 	@DisplayName("Retrieve a document for a given working ")
 	@Test
 	void givenWorker_whenSearchedFor_thenRetrunWorkDocument() {
-		// give a worker name and a project name
-		String worker = "test123";
 
-		// when searched for 
+		// when searched for
 		List<WorkingTime> workingTime = timeRecordingRepository.findByCoWorkerName(worker);
 		System.out.print(workingTime.get(0));
 		// then the returned Object is not null
@@ -81,13 +84,11 @@ class TimeRecordingRepositoryTest {
 	@DisplayName("Fail to Retrieve a document for a given worker ")
 	@Test
 	void givenWorker_whenSearchedFor_thenRetrunNull() {
-		// give a worker name and a project name
-		String worker = "Houssein";
 
 		// when searched for a Document
-		List<WorkingTime> workingTime = timeRecordingRepository.findByCoWorkerName(worker);
+		List<WorkingTime> workingTime = timeRecordingRepository.findByCoWorkerName("AnyNameNotThere");
 
-		// then the returned Document is  empty
+		// then the returned Document is empty
 		assertTrue(workingTime.isEmpty());
 
 	}

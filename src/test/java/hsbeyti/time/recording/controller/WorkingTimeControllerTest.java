@@ -26,6 +26,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import hsbeyti.time.recording.entities.*;
 import hsbeyti.time.recording.exceptions.NoExistingWorkTimeException;
+import hsbeyti.time.recording.initilization.WorkingTimeInitialisationInterface;
+import hsbeyti.time.recording.initilization.WorkingTimeInitializationImpl;
 import hsbeyti.time.recording.services.TimeRecordingServices;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,49 +36,23 @@ class WorkingTimeControllerTest {
 	private MockMvc mvc;
 
 	@Mock
-	private TimeRecordingServices timeRecordingServices;;
+	private TimeRecordingServices timeRecordingServices;
 
 	@InjectMocks
 	private WorkingTimeController workingTimeController;
 
 	private WorkingTime workingTime;
-	private WorkingTimeSlot workingTimeSlot;
-	private WorkingDay WorkingDay;
-	private BreakTimeSlot breakTimeSlot;
+
 	// This object will be magically initialized by the initFields method below.
 	private JacksonTester<WorkingTime> jsonWorkingTime;
 
-	public void initialize() {
-
-		workingTimeSlot = new WorkingTimeSlot();
-		workingTimeSlot.setStart("70");
-		workingTimeSlot.setEnd("90");
-		List<WorkingTimeSlot> workingTimeSlots = new ArrayList<WorkingTimeSlot>();
-		workingTimeSlots.add(workingTimeSlot);
-
-		breakTimeSlot = new BreakTimeSlot();
-		breakTimeSlot.setDescription("Lunch");
-		breakTimeSlot.setDuration("30");
-		List<BreakTimeSlot> breakTimeSlots = new ArrayList<BreakTimeSlot>();
-		breakTimeSlots.add(breakTimeSlot);
-
-		workingTime = new WorkingTime();
-		workingTime.setCoWorkerName("testWroker");
-		workingTime.setProjectName("testProject");
-		workingTime.setProjectOrderNumber("testOrder");
-		workingTime.setWrokingDays(new ArrayList<WorkingDay>());
-		WorkingDay = new WorkingDay();
-		WorkingDay.setWorkingDay("26.05.2022");
-		WorkingDay.setWorkingTimeSlots(workingTimeSlots);
-		WorkingDay.setWorkingBreaks(breakTimeSlots);
-		workingTime.getWrokingDays().add(WorkingDay);
-
-	}
+	private WorkingTimeInitialisationInterface workingTimeInitializationImpl;
 
 	@BeforeEach
 	public void setup() {
 		// create all objects needed
-		initialize();
+		 workingTimeInitializationImpl= new WorkingTimeInitializationImpl ();
+		workingTime =workingTimeInitializationImpl.createAWorkingTimeObject("testWorker","testProject");
 		JacksonTester.initFields(this, new ObjectMapper());
 		// MockMvc standalone approach
 		mvc = MockMvcBuilders.standaloneSetup(workingTimeController)

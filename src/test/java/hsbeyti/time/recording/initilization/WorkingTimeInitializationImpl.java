@@ -9,18 +9,19 @@ import hsbeyti.time.recording.entities.WorkingTime;
 import hsbeyti.time.recording.entities.WorkingTimeSlot;
 
 public class WorkingTimeInitializationImpl implements WorkingTimeInitialisationInterface {
-  private WorkingTimeInitializationTemplate workingTemplate;
+	private WorkingTimeInitializationTemplate workingTemplate;
+
 	@Override
-	public WorkingTimeInitializationTemplate getWorkingTimeCreatedObject() {
+	public WorkingTimeInitializationTemplate getWorkingTimeCreatedTemplate() {
 		// TODO Auto-generated method stub
 		return workingTemplate;
 	}
-
+    // create a complete WorkingTime Object that represent a JSON document
 	@Override
-	public WorkingTime createAWorkingTimeObject(String workerName, String projectName) {
-		// TODO Auto-generated method stub
-		 workingTemplate = new WorkingTimeInitializationTemplate(new WorkingTime(),
-				new WorkingTimeSlot("70", "1000"), new WorkingDay(), new BreakTimeSlot("Lunch", "30"));
+	public WorkingTime createAWorkingTimeObject(String workerName, String projectName,String date) {
+		
+		workingTemplate = new WorkingTimeInitializationTemplate(new WorkingTime(), new WorkingTimeSlot("70", "1000"),
+				new WorkingDay(), new BreakTimeSlot("Lunch", "30"));
 
 		List<WorkingTimeSlot> workingTimeSlots = new ArrayList<WorkingTimeSlot>();
 		workingTimeSlots.add(workingTemplate.getWorkingTimeSlot());
@@ -29,10 +30,10 @@ public class WorkingTimeInitializationImpl implements WorkingTimeInitialisationI
 		breakTimeSlots.add(workingTemplate.getBreakTimeSlot());
 
 		WorkingDay workingDay = workingTemplate.getWorkingDay();
-		workingDay.setWorkingDay("26.05.2022");
+		workingDay.setWorkingDay(date);
 		workingDay.setWorkingTimeSlots(workingTimeSlots);
 		workingDay.setWorkingBreaks(breakTimeSlots);
-		
+
 		WorkingTime workingTime = workingTemplate.getWorkingTime();
 		workingTime.setCoWorkerName(workerName);
 		workingTime.setProjectName(projectName);

@@ -52,7 +52,7 @@ class WorkingTimeControllerTest {
 	public void setup() {
 		// create all objects needed
 		 workingTimeInitializationImpl= new WorkingTimeInitializationImpl ();
-		workingTime =workingTimeInitializationImpl.createAWorkingTimeObject("testWorker","testProject");
+		workingTime =workingTimeInitializationImpl.createAWorkingTimeObject("testWorker","testProject","12.02.2022");
 		JacksonTester.initFields(this, new ObjectMapper());
 		// MockMvc standalone approach
 		mvc = MockMvcBuilders.standaloneSetup(workingTimeController)

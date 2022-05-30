@@ -44,30 +44,30 @@ class TimeRecordingServicesTest {
 	public void setup() {
 
 		workingTimeInitializationImpl = new WorkingTimeInitializationImpl();
-		workingTime = workingTimeInitializationImpl.createAWorkingTimeObject("testWorker","testProject");
+		workingTime = workingTimeInitializationImpl.createAWorkingTimeObject("testWorker", "testProject", "22.02.2022");
 	}
 
 	@DisplayName("JUnit test for succefully saving a WorkingTime document ")
 	@Test
-	public void givenEmployeeObject_whenSaveEmployee_thenReturnEmployeeObject() throws IOException {
+	public void givenWorkingTimeObject_whenSaveWorkingTime_thenReturnWorkingTimeObject() throws IOException {
 
 		// given -
-
+		// avoid duplicate document in the DB
 		BDDMockito.given(timeRecordingRepository.findByCoWorkerNameAndProjectName(workingTime.getCoWorkerName(),
 				workingTime.getProjectName())).willReturn(null);
 		BDDMockito.given(timeRecordingRepository.save(workingTime)).willReturn(workingTime);
 		// when - creating a new document
-		ResponseEntity<WorkingTime> savedOne = timeRecordingServices.createTimeRecording(workingTime);
+		ResponseEntity<WorkingTime> savedWorkingTime = timeRecordingServices.createTimeRecording(workingTime);
 
 		// then - it must return HttpStatus.CREATED
-		assertEquals(HttpStatus.CREATED, savedOne.getStatusCode());
+		assertEquals(HttpStatus.CREATED, savedWorkingTime.getStatusCode());
 	}
 
-	@DisplayName("JUnit test for failing to save a WorkingTime that allready exist ")
+	@DisplayName("JUnit test for failing to save a WorkingTime Document because it is allready exist ")
 	@Test
-	public void givenEmployeeObject_whenSaveEmployee_thenReturnBadRequest() throws IOException {
+	public void givenWorkingTimeObject_whenSaveWorkingTime_thenReturnBadRequest() throws IOException {
 
-		// given -
+		// given - Document is alleardy saved in previous actions
 		BDDMockito.given(timeRecordingRepository.findByCoWorkerNameAndProjectName(workingTime.getCoWorkerName(),
 				workingTime.getProjectName())).willReturn(workingTime);
 		// when - creating a new document
@@ -115,23 +115,65 @@ class TimeRecordingServicesTest {
 	public void givenAWorkerAprojectAndAworkingTimeSlot_whenUpdatingNotExistingDocument_thenThrowException()
 			throws IOException {
 
-		// given -
+		// given -no document found to update
 		BDDMockito.given(timeRecordingRepository.findByCoWorkerNameAndProjectName(workingTime.getCoWorkerName(),
 				workingTime.getProjectName())).willReturn(null);
-		// when - creating a new document
+		// when - updating document
 		assertThrows(UserNotFoundException.class, () -> {
 			timeRecordingServices.updateTimeSlotFor(workingTime.getCoWorkerName(), workingTime.getProjectName(),
-					workingTimeInitializationImpl.getWorkingTimeCreatedObject().getWorkingTimeSlot());
+					workingTimeInitializationImpl.getWorkingTimeCreatedTemplate().getWorkingTimeSlot());
 		});
 
-		// then - it must not be to save a new WrokingTime document
+		// then - it must not update WrokingTime document
 		verify(timeRecordingRepository, never()).save(workingTime);
 	}
 
 	// update WorkingTimeSlotFor
-	@DisplayName("JUnit test for successfully Updating an existing WorkingTime ")
+	@DisplayName("JUnit test for successfully Updating aWorkingTime documnt with an existing working day with a new  WorkingTimeSlot  ")
 	@Test
 	public void givenAWorkerAprojectAndAworkingTimeSlot_whenUpdatingExistingDocument_thenReturnDocumentObject()
+			throws IOException {
+
+		// given - to be updated Document found
+		BDDMockito.given(timeRecordingRepository.findByCoWorkerNameAndProjectName(workingTime.getCoWorkerName(),
+				workingTime.getProjectName())).willReturn(workingTime);
+		// given - the document contains this working day
+		BDDMockito.given(aWorkingDay.containsThis("20.2.222", workingTime.getWrokingDays())).willReturn(workingDay);
+		// when - add a new workingTimeSlot to this document
+		ResponseEntity<WorkingTime> savedOne = timeRecordingServices.updateTimeSlotFor(workingTime.getCoWorkerName(),
+				workingTime.getProjectName(),
+				workingTimeInitializationImpl.getWorkingTimeCreatedTemplate().getWorkingTimeSlot());
+
+		// then - it must return HttpStatus.CREATED
+		assertEquals(HttpStatus.OK, savedOne.getStatusCode());
+
+	}
+
+	// update WorkingTimeSlotFor
+	@DisplayName("JUnit test for successfully Updating aWorkingTime documnt with a new working day with a new  WorkingTimeSlot  ")
+	@Test
+	public void givenAWorkerAprojectAndAworkingTimeSlotAndAworkingDay_whenUpdatingExistingDocument_thenReturnDocumentObject()
+			throws IOException {
+
+		// given - to be updated Document found
+		BDDMockito.given(timeRecordingRepository.findByCoWorkerNameAndProjectName(workingTime.getCoWorkerName(),
+				workingTime.getProjectName())).willReturn(workingTime);
+		// given - the document does not contains this working day
+		BDDMockito.given(aWorkingDay.containsThis("20.2.222", workingTime.getWrokingDays())).willReturn(null);
+		// when - add a new workingTimeSlot to this document
+		ResponseEntity<WorkingTime> savedOne = timeRecordingServices.updateTimeSlotFor(workingTime.getCoWorkerName(),
+				workingTime.getProjectName(),
+				workingTimeInitializationImpl.getWorkingTimeCreatedTemplate().getWorkingTimeSlot());
+
+		// then - it must return HttpStatus.CREATED
+		assertEquals(HttpStatus.OK, savedOne.getStatusCode());
+
+	}
+
+	// update BreakTimeSlotFor
+	@DisplayName("JUnit test for successfully Updating an existing WorkingTime ")
+	@Test
+	public void givenAWorkerAprojectAndABreakTimeSlot_whenUpdatingExistingDocument_thenReturnDocumentObject()
 			throws IOException {
 
 		// given -
@@ -140,9 +182,9 @@ class TimeRecordingServicesTest {
 		// given -
 		BDDMockito.given(aWorkingDay.containsThis("", workingTime.getWrokingDays())).willReturn(workingDay);
 		// when - updating a new document
-		ResponseEntity<WorkingTime> savedOne = timeRecordingServices.updateTimeSlotFor(workingTime.getCoWorkerName(),
-				workingTime.getProjectName(),
-				workingTimeInitializationImpl.getWorkingTimeCreatedObject().getWorkingTimeSlot());
+		ResponseEntity<WorkingTime> savedOne = timeRecordingServices.updateBreakTimeSlotFor(
+				workingTime.getCoWorkerName(), workingTime.getProjectName(),
+				workingTimeInitializationImpl.getWorkingTimeCreatedTemplate().getBreakTimeSlot());
 
 		// then - it must return HttpStatus.CREATED
 		assertEquals(HttpStatus.OK, savedOne.getStatusCode());
@@ -161,31 +203,11 @@ class TimeRecordingServicesTest {
 		// when - creating a new document
 		assertThrows(UserNotFoundException.class, () -> {
 			timeRecordingServices.updateBreakTimeSlotFor(workingTime.getCoWorkerName(), workingTime.getProjectName(),
-					workingTimeInitializationImpl.getWorkingTimeCreatedObject().getBreakTimeSlot());
+					workingTimeInitializationImpl.getWorkingTimeCreatedTemplate().getBreakTimeSlot());
 		});
 
 		// then - it must not be to save a new WrokingTime document
 		verify(timeRecordingRepository, never()).save(workingTime);
 	}
 
-	// update BreakTimeSlotFor
-	@DisplayName("JUnit test for successfully Updating an existing WorkingTime ")
-	@Test
-	public void givenAWorkerAprojectAndABreakTimeSlot_whenUpdatingExistingDocument_thenReturnDocumentObject()
-			throws IOException {
-
-		// given -
-		BDDMockito.given(timeRecordingRepository.findByCoWorkerNameAndProjectName(workingTime.getCoWorkerName(),
-				workingTime.getProjectName())).willReturn(workingTime);
-		// given -
-		BDDMockito.given(aWorkingDay.containsThis("", workingTime.getWrokingDays())).willReturn(workingDay);
-		// when - updating a new document
-		ResponseEntity<WorkingTime> savedOne = timeRecordingServices.updateBreakTimeSlotFor(
-				workingTime.getCoWorkerName(), workingTime.getProjectName(),
-				workingTimeInitializationImpl.getWorkingTimeCreatedObject().getBreakTimeSlot());
-
-		// then - it must return HttpStatus.CREATED
-		assertEquals(HttpStatus.OK, savedOne.getStatusCode());
-
-	}
 }

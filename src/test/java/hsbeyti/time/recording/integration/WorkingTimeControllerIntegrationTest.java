@@ -49,9 +49,9 @@ public class WorkingTimeControllerIntegrationTest {
 	@BeforeEach
 	void setup() {
 		// create all objects needed
-		//workingTime = initialize();
+		
 		WorkingTimeInitialisationInterface workingTimeInitializationImpl= new WorkingTimeInitializationImpl ();
-		workingTime =workingTimeInitializationImpl.createAWorkingTimeObject("testWorker","testProject");
+		workingTime =workingTimeInitializationImpl.createAWorkingTimeObject("testWorker","testProject","12.02.2022");
 
 		timeRecordingRepository.deleteAll();
 	}

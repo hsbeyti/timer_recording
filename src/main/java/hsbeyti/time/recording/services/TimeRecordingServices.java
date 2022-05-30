@@ -31,76 +31,78 @@ public class TimeRecordingServices {
 	@Autowired
 	TimeRecordingRepository timeRecordingRepository;
 
-	// @PostMapping("/workingtime")
+	public String getdocumentFoundMessage(String worker, String project) {
+		return "Document found " + worker + "on Project " + project;
+	}
+
+	public String getdocumentNotFoundMessage(String worker, String project) {
+		return "Document Not found " + worker + "on Project " + project;
+	}
+
+	public String getdocumentUpdatedMessage(String worker, String project) {
+		return "Document updated for " + worker + "on Project " + project;
+	}
+
+	// Executed by @PostMapping("/workingtime") in the controller class
 	public ResponseEntity<WorkingTime> createTimeRecording(WorkingTime WorkingTimeOnAProject) {
 		String workerName = WorkingTimeOnAProject.getCoWorkerName();
 		String projectName = WorkingTimeOnAProject.getProjectName();
-		String errorMessage = "Document exsists for " + workerName + " working on Project " 
-		         + projectName;
+		String errorMessage = "Document exsists for " + workerName + " working on Project " + projectName;
 
-		// Avoinding duplicate document
+		// Avoiding a duplicate document
 		WorkingTime workingTime = timeRecordingRepository.findByCoWorkerNameAndProjectName(workerName, projectName);
 		if (workingTime != null)
 			throw new UserAllreadExistException(errorMessage);
 		logger.debug("Saving a new document ");
-		workingTime = timeRecordingRepository.save(WorkingTimeOnAProject);
-		logger.debug("Saved successfully a new document: " + workingTime);
+		workingTime = saveWorkingTimeDocument(WorkingTimeOnAProject,
+				"Saved successfully this new document: " + workingTime);
+
 		return new ResponseEntity(workingTime, HttpStatus.CREATED);
 
 	}
 
-	
-
-	public String getdocumentFoundMessage(String worker, String project) {
-		return "document found " + worker + "on Project " + project;
-	}
-
-	public String getdocumentNotFoundMessage(String worker, String project) {
-		return "document Not found " + worker + "on Project " + project;
-	}
-
-	public String getdocumentUpdatedMessage(String worker, String project) {
-		return "document updated for " + worker + "on Project " + project;
-	}
-
-	public WorkingTime saveTimeRecording(WorkingTime WorkingTimeOnAProject) {
+	// Helper function
+	public WorkingTime saveWorkingTimeDocument(WorkingTime WorkingTimeOnAProject, String message) {
 		WorkingTime workingTime = timeRecordingRepository.save(WorkingTimeOnAProject);
-		logger.debug("Saveded successfully a new  document: " + workingTime);
+		logger.debug(message);
 		return workingTime;
 	}
 
-	// @GetMapping("/workingtime/{worker}/{project}")
+	// Executed by @GetMapping("/workingtime/{worker}/{project}")
 	public WorkingTime getWorkingTimeFor(String worker, /* Working on */ String project) {
 		return isThereADocumentFor(worker, project);
 
 	}
+
+	// Helper function
 	public WorkingTime isThereADocumentFor(String wroker_name, /* Working on */ String project_name) {
 		WorkingTime workingTime = timeRecordingRepository.findByCoWorkerNameAndProjectName(wroker_name, project_name);
 		if (workingTime == null)
 			throw new UserNotFoundException(getdocumentNotFoundMessage(wroker_name, project_name));
 		return workingTime;
 	}
-	// @PutMapping("/workingtime/workingbreakslot/{worker}/{project}")
+
+	// Executed by @PutMapping("/workingtime/workingbreakslot/{worker}/{project}")
 	public ResponseEntity<WorkingTime> updateBreakTimeSlotFor(String worker, /* Working on */ String project,
 			/* and having a break of */BreakTimeSlot aNewBreakTimeSlot) {
 
-		// we can only update existing document
+		// We can only update an existing document
 		WorkingTime workingTimeDocument = isThereADocumentFor(worker, project);
 
 		logger.debug(getdocumentFoundMessage(worker, project));
 
 		toDayDateString = getTodaDate();
 
-		// check if this document contains such toDayDateString
+		// Check if the retrieved document contains toDayDateString entry  
 		WorkingDay workingDay = containsThisWorkingDay(toDayDateString, workingTimeDocument.getWrokingDays());
 		if (workingDay != null) {// it contains ):
-			// add new BreakTiemSlot to
+			// add the new aNewBreakTimeSlot to the document
 			workingDay.getWorkingBreaks().add(aNewBreakTimeSlot);
-			timeRecordingRepository.save(workingTimeDocument);
-			logger.debug(getdocumentUpdatedMessage(worker, project) + toDayDateString);
+			saveWorkingTimeDocument(workingTimeDocument, getdocumentUpdatedMessage(worker, project) + toDayDateString);
+
 			return new ResponseEntity(workingTimeDocument, HttpStatus.OK);
 
-		} else {// add first a new workingDay (with today date) to this document and then
+		} else {// Add first a new workingDay (with today date) to this document and then
 				// add the aNewBreakTimeSlot
 			return updateBreakTimeSlotFor(workingTimeDocument, aNewBreakTimeSlot);
 		}
@@ -108,18 +110,19 @@ public class TimeRecordingServices {
 
 	public ResponseEntity<WorkingTime> updateBreakTimeSlotFor(WorkingTime workingTimeDocument,
 			BreakTimeSlot aNewBreakTimeSlot) {
-		// a wroking day needs an array of Break time slot
+		// a working day needs an array of Break time slot
 		List<BreakTimeSlot> aBreakTimeSlots = createBreakTimeSlots();
 		aBreakTimeSlots.add(aNewBreakTimeSlot); // needs also an array of working time slots
 		WorkingDay aWorkingDay = createAWorkingDay(toDayDateString, aBreakTimeSlots, createWorkingTimeSlots());
 		workingTimeDocument.getWrokingDays().add(aWorkingDay);
-		WorkingTime workingTime = timeRecordingRepository.save(workingTimeDocument);
-		logger.debug("Document updated for" + aWorkingDay + "with the break time slot: " + aNewBreakTimeSlot);
+		WorkingTime workingTime = saveWorkingTimeDocument(workingTimeDocument,
+				"Document updated for" + aWorkingDay + "with the break time slot: " + aNewBreakTimeSlot);
+
 		return new ResponseEntity(workingTime, HttpStatus.OK);
 
 	}
 
-	// @PutMapping("/workingtime/workingtimeslot/{worker}/{project}")
+	// Executed by @PutMapping("/workingtime/workingtimeslot/{worker}/{project}")
 	public ResponseEntity<WorkingTime> updateTimeSlotFor(String worker, /* Worked on the */ String project,
 			/* for a duration of */WorkingTimeSlot aNewTimeSlot) {
 
@@ -134,8 +137,8 @@ public class TimeRecordingServices {
 			// add new WorkingTimeSlot to to this document and then
 			// add the WorkingTimeSlot
 			workingDay.getWorkingTimeSlots().add(aNewTimeSlot);
-			timeRecordingRepository.save(workingTimeDocument);
-			logger.debug(getdocumentUpdatedMessage(worker, project) + workingDay);
+			saveWorkingTimeDocument(workingTimeDocument, getdocumentUpdatedMessage(worker, project) + workingDay);
+
 			return new ResponseEntity(workingTimeDocument, HttpStatus.OK);
 		} else {// add first a new workingDay to the document
 			return updateWorkingTimeSlot(workingTimeDocument, aNewTimeSlot);
@@ -147,7 +150,7 @@ public class TimeRecordingServices {
 		return aworkingDay.containsThis(toDayDateString, workingDays);
 
 	}
-
+// Helper function
 	public ResponseEntity<WorkingTime> updateWorkingTimeSlot(WorkingTime workingTimeDocument,
 			WorkingTimeSlot aNewTimeSlot) {
 
@@ -155,8 +158,9 @@ public class TimeRecordingServices {
 		aWorkingTimeSlot.add(aNewTimeSlot);
 		WorkingDay aWorkingDay = createAWorkingDay(toDayDateString, createBreakTimeSlots(), aWorkingTimeSlot);
 		workingTimeDocument.getWrokingDays().add(aWorkingDay);
-		timeRecordingRepository.save(workingTimeDocument);
-		logger.debug("Document updated for" + aWorkingDay + "with the wrorking time slot: " + aNewTimeSlot);
+		saveWorkingTimeDocument(workingTimeDocument,
+				"Document updated for" + aWorkingDay + "with the wrorking time slot: " + aNewTimeSlot);
+
 		return new ResponseEntity(workingTimeDocument, HttpStatus.OK);
 
 	}

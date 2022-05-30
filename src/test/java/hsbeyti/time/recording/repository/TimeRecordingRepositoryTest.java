@@ -39,26 +39,25 @@ class TimeRecordingRepositoryTest {
 	public void setup() {
 		timeRecordingRepository.deleteAll();
 		workingTimeInitializationImpl = new WorkingTimeInitializationImpl();
-		workingTime = workingTimeInitializationImpl.createAWorkingTimeObject(worker, peoject);
-
+		workingTime = workingTimeInitializationImpl.createAWorkingTimeObject(worker, peoject,"22.02.2022");
+		// given
 		timeRecordingRepository.save(workingTime);
 	}
 
-	
-
-	@DisplayName("Retrieve a document for a given working working on aproject")
+	@DisplayName("Successfully retrieve a document for a given worker on a project")
 	@Test
 	void givenWorkerandProject_whenSearchedFor_thenRetrunWorkDocument() {
 
 		// when searched for
 		WorkingTime workingTime = timeRecordingRepository.findByCoWorkerNameAndProjectName(worker, peoject);
-		System.out.print(workingTime);
+
 		// then the returned Object is not null
 		assertNotNull(workingTime);
 
 	}
 
-	@Test // not found
+	@DisplayName("Fail to retrieve a document for a given worker working on a project")
+	@Test
 	void givenWorkerandProject_whenSearchedFor_thenRetrunNull() {
 
 		// when searched for
@@ -69,19 +68,19 @@ class TimeRecordingRepositoryTest {
 
 	}
 
-	@DisplayName("Retrieve a document for a given working ")
+	@DisplayName("Successfully retrieve all documents for a given working ")
 	@Test
 	void givenWorker_whenSearchedFor_thenRetrunWorkDocument() {
 
 		// when searched for
 		List<WorkingTime> workingTime = timeRecordingRepository.findByCoWorkerName(worker);
 		System.out.print(workingTime.get(0));
-		// then the returned Object is not null
-		assertNotNull(workingTime.get(0));
+		// then return at least one Object that is not null
+		assertNotNull(workingTime.size());
 
 	}
 
-	@DisplayName("Fail to Retrieve a document for a given worker ")
+	@DisplayName("Fail to Retrieve any document for a given worker ")
 	@Test
 	void givenWorker_whenSearchedFor_thenRetrunNull() {
 
@@ -90,6 +89,7 @@ class TimeRecordingRepositoryTest {
 
 		// then the returned Document is empty
 		assertTrue(workingTime.isEmpty());
+		
 
 	}
 }

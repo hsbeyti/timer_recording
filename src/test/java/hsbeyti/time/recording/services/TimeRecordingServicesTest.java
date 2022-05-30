@@ -67,7 +67,7 @@ class TimeRecordingServicesTest {
 	@Test
 	public void givenWorkingTimeObject_whenSaveWorkingTime_thenReturnBadRequest() throws IOException {
 
-		// given - Document is alleardy saved in previous actions
+		// given - Assuming that this document is alleardy saved in previous post action
 		BDDMockito.given(timeRecordingRepository.findByCoWorkerNameAndProjectName(workingTime.getCoWorkerName(),
 				workingTime.getProjectName())).willReturn(workingTime);
 		// when - creating a new document
@@ -75,7 +75,7 @@ class TimeRecordingServicesTest {
 			timeRecordingServices.createTimeRecording(workingTime);
 		});
 
-		// then - it must not be to save a new WrokingTime document
+		// then - it must not be save a new WrokingTime document
 		verify(timeRecordingRepository, never()).save(workingTime);
 	}
 

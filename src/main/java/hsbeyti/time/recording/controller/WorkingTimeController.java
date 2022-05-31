@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import hsbeyti.time.recording.entities.*;
-import hsbeyti.time.recording.repository.TimeRecordingRepository;
 import hsbeyti.time.recording.services.TimeRecordingServices;
+import hsbeyti.time.recording.services.TimeRecordingServicesInterface;
 
 @RestController
 @RequestMapping("/api/v1/timerecording")
@@ -28,7 +28,7 @@ import hsbeyti.time.recording.services.TimeRecordingServices;
 public class WorkingTimeController {
 
 	@Autowired
-	TimeRecordingServices timeRecordingServices;
+	TimeRecordingServicesInterface timeRecordingServices;
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/workingtime")//createTimeRecording
 	public ResponseEntity<WorkingTime> createTimeRecording(@RequestBody WorkingTime WorkingTimeOnAProject) {

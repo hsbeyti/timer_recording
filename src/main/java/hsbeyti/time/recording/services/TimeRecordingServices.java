@@ -1,14 +1,10 @@
 package hsbeyti.time.recording.services;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import javax.validation.Valid;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,7 +19,7 @@ import hsbeyti.time.recording.time.date.utility.DateFormater;
 import hsbeyti.time.recording.time.date.utility.TodayDateCreator;
 
 @Service
-public class TimeRecordingServices {
+public class TimeRecordingServices implements TimeRecordingServicesInterface{
 	Logger logger = LogManager.getLogger(TimeRecordingServices.class);
 	private String toDayDateString;
 	@Autowired

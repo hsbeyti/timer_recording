@@ -1,5 +1,5 @@
 package hsbeyti.time.recording.controller;
-
+import org.springframework.http.HttpStatus;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,37 +15,45 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import hsbeyti.time.recording.entities.*;
-import hsbeyti.time.recording.repository.TimeRecordingRepository;
 import hsbeyti.time.recording.services.TimeRecordingServices;
+import hsbeyti.time.recording.services.TimeRecordingServicesInterface;
 
 @RestController
 @RequestMapping("/api/v1/timerecording")
-@ComponentScan("hsbeyti.time.recording.*")
+
 public class WorkingTimeController {
 
 	@Autowired
-	TimeRecordingServices timeRecordingServices;
+	TimeRecordingServicesInterface timeRecordingServices;
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping("/workingtime")//createTimeRecording
+	public ResponseEntity<WorkingTime> createTimeRecording(@RequestBody WorkingTime WorkingTimeOnAProject) {
+		//return timeRecordingServices.saveTimeRecording(WorkingTimeOnAProject);
+		ResponseEntity<WorkingTime> response=timeRecordingServices.createTimeRecording(WorkingTimeOnAProject);
+	     return response;
+	  }
 
-	@PostMapping("/workingtime")
-	public ResponseEntity<Object> createNewWorkingDocument(@RequestBody WorkingTime WorkingTimeOnAProject) {
-		return timeRecordingServices.createTimeRecording(WorkingTimeOnAProject);
-	}
-
-	@GetMapping("/workingtime/{worker}")
-	public List<Optional<WorkingTime>> getWorkingTimeForA(@Valid @PathVariable String worker) {
-		return timeRecordingServices.getWorkingTime(worker);
-	}
+	
 	@GetMapping("/workingtime/{worker}/{project}")
-	public Optional<WorkingTime> getWorkingTimeForAWorkerOnAProject(@PathVariable String worker,@PathVariable String project) {
-		return timeRecordingServices.getWorkingTimeForAWorkerOnAProject(worker,project);
+	public WorkingTime getWorkingTimeFor(@PathVariable String worker,@PathVariable String project) {
+		return timeRecordingServices.getWorkingTimeFor(worker,/* Working on */project);
 	}
-	@PutMapping("/workingtime/{worker}/{project}")
-	public Optional<WorkingTime> updateBreakTimeSlototWorkingTimeForAWorkerOnAProject(@PathVariable String worker, @PathVariable String project,
+	
+	@PutMapping("/workingtime/workingbreakslot/{worker}/{project}")
+	public ResponseEntity<WorkingTime> updateBreakTimeSloFor(@PathVariable String worker,/* Working on */ @PathVariable String project,
 			@RequestBody BreakTimeSlot aNewBreakTimeSlot){
-		return timeRecordingServices.updateBreakTimeSlototWorkingTimeForAWorkerOnAProject(worker,project,aNewBreakTimeSlot);
+		return timeRecordingServices.updateBreakTimeSlotFor(worker,project,aNewBreakTimeSlot);
 	
 	}
+	
+	@PutMapping("/workingtime/workingtimeslot/{worker}/{project}")
+	public ResponseEntity<WorkingTime> updateTimeSloFor(@PathVariable String worker,/* Working on */ @PathVariable String project,
+			@RequestBody WorkingTimeSlot aNewTimeSlot){
+		return timeRecordingServices.updateTimeSlotFor(worker,project,aNewTimeSlot);
+	
+	}	
 }

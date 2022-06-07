@@ -11,6 +11,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
+/**
+ * Rabbit test
+  */
+
 @Configuration
 public class RabbitMQConfig {
 	private static final String DEBUG_QUEUE = "debugQueue";

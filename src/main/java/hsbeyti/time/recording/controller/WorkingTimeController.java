@@ -42,6 +42,10 @@ public class WorkingTimeController {
 	public WorkingTime getWorkingTimeFor(@PathVariable String worker,@PathVariable String project) {
 		return timeRecordingServices.getWorkingTimeFor(worker,/* Working on */project);
 	}
+	@GetMapping("/workingtime")
+	public List<WorkingTime> getAllWorkingTime() {
+		return timeRecordingServices.getAllWorkingTime();
+	}
 	
 	@PutMapping("/workingtime/workingbreakslot/{worker}/{project}")
 	public ResponseEntity<WorkingTime> updateBreakTimeSloFor(@PathVariable String worker,/* Working on */ @PathVariable String project,

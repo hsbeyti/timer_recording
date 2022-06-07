@@ -7,7 +7,9 @@ import java.util.List;
 
 
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +23,7 @@ import hsbeyti.time.recording.time.date.utility.TodayDateCreator;
 
 @Service
 public class TimeRecordingServices implements TimeRecordingServicesInterface{
-	Logger logger = LogManager.getLogger(TimeRecordingServices.class);
+	Logger logger = LoggerFactory.getLogger(TimeRecordingServices.class);
 	@Autowired
 	private RabbitTemplate rabbitTemplate;
 	private String toDayDateString;
@@ -53,7 +55,7 @@ public class TimeRecordingServices implements TimeRecordingServicesInterface{
 		if (workingTime != null)
 			throw new UserAllreadExistException(errorMessage);
 		logger.debug("Saving a new document ");
-		rabbitTemplate.convertAndSend("debugExchnage","simple","Saving a new document ");
+		//rabbitTemplate.convertAndSend("debugExchnage","simple","Saving a new document ");
 		workingTime = saveWorkingTimeDocument(WorkingTimeOnAProject,
 				"Saved successfully this new document: " + workingTime);
 
@@ -65,7 +67,7 @@ public class TimeRecordingServices implements TimeRecordingServicesInterface{
 	public WorkingTime saveWorkingTimeDocument(WorkingTime WorkingTimeOnAProject, String message) {
 		WorkingTime workingTime = timeRecordingRepository.save(WorkingTimeOnAProject);
 		logger.debug(message);
-		rabbitTemplate.convertAndSend("debugExchnage","simple",message);
+		//rabbitTemplate.convertAndSend("debugExchnage","simple",message);
 		return workingTime;
 	}
 
@@ -73,6 +75,9 @@ public class TimeRecordingServices implements TimeRecordingServicesInterface{
 	public WorkingTime getWorkingTimeFor(String worker, /* Working on */ String project) {
 		return isThereADocumentFor(worker, project);
 
+	}
+	public List<WorkingTime> getAllWorkingTime(){
+		 return timeRecordingRepository.findAll();
 	}
 
 	// Helper function
